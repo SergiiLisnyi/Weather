@@ -11,17 +11,19 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class ViewController: UIViewController {
+class WeatherController: UIViewController {
 
     var model = WeatherService()
     var delegate: PageViewController?
     var nameCity: String!
+    var modelCity: CityModel!
 
     @IBOutlet weak var dataCollection: UICollectionView!
     @IBOutlet weak var dataTable: UITableView!
+
     var latitude = "51.50998"
     var longitude =  "-0.1337"
-
+    
     
     var arrayTempHourly = [String]()
     var arrayTimeHourly = [String]()
@@ -29,6 +31,7 @@ class ViewController: UIViewController {
     var arrayMinTempDay = [String]()
     var arrayMaxTempDay = [String]()
     
+    var type: TypeInputData!
     
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
@@ -38,6 +41,16 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         updateLocation()
+
+        guard let type = type else { return }
+        
+        switch type {
+        case TypeInputData.location:
+            getWeather(latitude: latitude, longitude: longitude)
+        
+        case TypeInputData.city(let name):
+            getWeatherName(name: name)
+        }
     }
 
     func updateLocation() {
@@ -55,6 +68,7 @@ class ViewController: UIViewController {
     @IBAction func addButtonTapped(_ sender: UIButton) {
         guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SelectNameViewController") as? CityViewController else { return }
         controller.delegate = delegate
+        controller.modelCity = self.modelCity
         self.present(controller, animated: true, completion: nil)
     }
     
@@ -75,9 +89,6 @@ class ViewController: UIViewController {
     }
     
     func getWeather(latitude: String, longitude: String) {
-        
-        print("in getWeather" + latitude + longitude)
-        
         model.getWeather(latitude: latitude, longitude: longitude, updateScreen: {
             DispatchQueue.main.sync {
                 self.updateScreen()
@@ -92,27 +103,20 @@ class ViewController: UIViewController {
             }
         })
     }
-    
-    
-  
 }
 
-extension ViewController: CLLocationManagerDelegate {
-
+extension WeatherController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
-
-//       latitude = String(locValue.latitude)
-//       longitude = String(locValue.longitude)
-//       getWeather(latitude: latitude, longitude: longitude)
+            latitude = String(locValue.latitude)
+            longitude = String(locValue.longitude)
         
-    getWeatherName(name: nameCity)
-        
+           // getWeather(latitude: latitude, longitude: longitude)
     }
 }
 
 
-extension ViewController: UITableViewDelegate, UITableViewDataSource {
+extension WeatherController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TableDataViewCell.identifier, for: indexPath) as? TableDataViewCell else  {
@@ -133,7 +137,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 
-extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension WeatherController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return  arrayTempHourly.count
     }

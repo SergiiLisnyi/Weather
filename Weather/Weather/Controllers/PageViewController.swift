@@ -10,26 +10,23 @@ import UIKit
 
 class PageViewController: UIPageViewController {
     
-    var arrayCity: [String] = ["London", "Milano"]
-    var controllers: [ViewController] = []
-  
-    var pages: [ViewController] {
+     var arrayCity = ["London", "Kiev"]
+    // var arrayCity = [String]()
+    var controllers: [WeatherController] = []
+    var model = CityModel()
+    
+    var pages: [WeatherController] {
         get {
-            print(arrayCity)
-            print(controllers.count)
-            print(arrayCity.count)
-            
             if controllers.count == arrayCity.count {
                     return controllers
             } else if controllers.count + 1 == arrayCity.count {
-                guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? ViewController
+                guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController
                     else { return controllers }
-                
-                    controller.nameCity = arrayCity.last!//TO DO
-                    controller.delegate = self
-                    controllers.append(controller)
-                
-                    return controllers
+                controller.type = TypeInputData.city(name: arrayCity.last!)
+                controller.modelCity = self.model
+                controller.delegate = self
+                controllers.append(controller)
+                return controllers
            }
             return controllers
         }
@@ -38,38 +35,55 @@ class PageViewController: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         dataSource = self
-        for i in 0..<arrayCity.count {
-            guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? ViewController else { return }
-            controller.nameCity = arrayCity[i]
-            controller.delegate = self
-            controllers.append(controller)
-        }
+        loadData()
         guard let firstVC = self.pages.first else { return }
-            setViewControllers([firstVC], direction: .forward, animated: true, completion: nil)
+        setViewControllers([firstVC], direction: .forward, animated: true, completion: nil)
     }
     
+    func loadData() {
+        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { return }
+        controller.type = TypeInputData.location()
+        controller.delegate = self
+        controller.modelCity = self.model
+        controllers.append(controller)
+        
+        if arrayCity.count>0 {
+            for _ in 1..<arrayCity.count {
+                guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { break }
+                controller.type = TypeInputData.city(name: arrayCity.last!)
+                controller.delegate = self
+                controller.modelCity = self.model
+                controllers.append(controller)
+            }
+        }
+    }
+    
+    func updateData(array: [String]) {
+        arrayCity = array
+    } 
 }
 
-// MARK: UIPageViewControllerDataSource
+ //MARK: UIPageViewControllerDataSource
 extension PageViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let viewControllerIndex = pages.index(of: viewController as! ViewController) else { return nil }
-        let previousIndex = viewControllerIndex - 1
-        guard previousIndex >= 0          else { return pages.last }
-        guard pages.count > previousIndex else { return nil        }
-        return pages[previousIndex]
+        guard let viewControllerIndex = pages.index(of: viewController as! WeatherController) else { return nil }
+      
+        if viewControllerIndex - 1 < 0  {
+            return nil
+        }
+        return pages[viewControllerIndex-1]
+        
     }
-    
+
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let viewControllerIndex = pages.index(of: viewController as! ViewController) else { return nil }
-        let nextIndex = viewControllerIndex + 1
-        guard nextIndex < pages.count else { return pages.first }
-        guard pages.count > nextIndex else { return nil         }
-        return pages[nextIndex]
+        guard let viewControllerIndex = pages.index(of: viewController as! WeatherController) else { return nil }
+    
+        if viewControllerIndex+1 >= controllers.count {
+            return nil
+        }
+        return controllers[viewControllerIndex+1]
     }
 }
-
-
 
 
 

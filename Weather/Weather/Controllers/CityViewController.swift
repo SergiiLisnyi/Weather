@@ -13,39 +13,29 @@ class CityViewController: UIViewController {
     @IBOutlet weak var enterLabel: UILabel!
     var delegate: PageViewController?
     @IBOutlet weak var nameLabel: UITextField!
-    var modelCity = CityModel()
     
+    var modelCity: CityModel!
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
-    
     @IBAction func selectButtonTapped(_ sender: UIButton) {
-      //  guard let data = self.delegate else { return }
         let nameCity = nameLabel.text!
-       // print(nameCity)
         isValidate(nameCity: nameCity)
-        print("tapped button")
-//        print(nameCity)
-//        data.arrayCity.append(nameCity)
-//        self.dismiss(animated: true)
     }
-    
     
     func isValidate(nameCity: String) {
         guard let data = self.delegate else { return }
-        print(nameCity)
         modelCity.getCityName(name: nameCity, updateScreen: { isValidateName in
             DispatchQueue.main.sync {
                 if isValidateName {
-                    
-                    data.arrayCity.append(nameCity)
+                    self.modelCity.arrayCity.append(nameCity)
+                    data.updateData(array: self.modelCity.arrayCity)
                     self.dismiss(animated: true)
                 }
                 else {
                     self.enterLabel.text = "No correct name"
                     self.enterLabel.textColor = .red
-                    print("false")
                 }
             }
         })

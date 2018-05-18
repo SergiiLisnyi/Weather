@@ -60,39 +60,14 @@ class WeatherService {
             guard let content = data else { print("not returning data") ; return }
             let clearJSON = JSON(content)
 
-            self.daysWeather = ForecastWeatherOnDays(arrayNameDay: self.getNameDay(json: clearJSON),
-                                  arrayMinTempDay: self.getMinTempDay(json: clearJSON),
-                                  arrayMaxTempDay: self.getMaxTempDay(json: clearJSON))
+            self.daysWeather = ForecastWeatherOnDays(arrayNameDay: ParserJSON.getNameDay(json: clearJSON),
+                                  arrayMinTempDay: ParserJSON.getMinTempDay(json: clearJSON),
+                                  arrayMaxTempDay: ParserJSON.getMaxTempDay(json: clearJSON))
             updateScreen()
         }
         task.resume()
     }
-    
-    fileprivate func getNameDay(json: JSON) -> [String] {
-        var result = [String]()
-        for i in 0..<5 {
-            let date = json["DailyForecasts"][i]["Date"].description
-            let onlyDay = date[0 ..< 10]
-            result.append(self.getDayOfWeek(onlyDay))
-        }
-        return result
-    }
-    
-    fileprivate func getMinTempDay(json: JSON) -> [String] {
-        var result = [String]()
-        for i in 0..<5 {
-            result.append(json["DailyForecasts"][i]["Temperature"]["Minimum"]["Value"].description + "°")
-        }
-        return result
-    }
-    
-    fileprivate func getMaxTempDay(json: JSON) -> [String] {
-        var result = [String]()
-        for i in 0..<5 {
-            result.append(json["DailyForecasts"][i]["Temperature"]["Maximum"]["Value"].description + "°")
-        }
-        return result
-    }
+
     
     fileprivate func getWeatherOnHourly(city: String, keyCity: String, updateScreen: @escaping ()->())  {
 
@@ -106,43 +81,11 @@ class WeatherService {
             
             self.hourlyWeather = ForecastWeatherHourly(city: city,
                                                        tempCurrent: clearJSON[0]["Temperature"]["Value"].description + "°",
-                                                       arrayTempHourly: self.getTempHourly(json: clearJSON),
-                                                       arrayTimeHourly: self.getTime(json: clearJSON))
+                                                       arrayTempHourly: ParserJSON.getTempHourly(json: clearJSON),
+                                                       arrayTimeHourly: ParserJSON.getTime(json: clearJSON))
             updateScreen()
         }
         task.resume()
     }
-    
-    fileprivate func getDayOfWeek(_ today:String) -> String {
-        let formatter  = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        guard let todayDate = formatter.date(from: today) else { return "no day" }
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE"
-        return dateFormatter.string(from: todayDate).capitalized
-    }
-    
-    
-    fileprivate func getTempHourly(json: JSON) -> [String] {
-        var result = [String]()
-        for i in 0..<12 {
-            result.append(json[i]["Temperature"]["Value"].description + "°")
-        }
-        return result
-    }
-    
-    fileprivate func getTime(json: JSON) -> [String] {
-        var result = [String]()
-        let time = json[0]["DateTime"].description
-        var hour = Int(time[11 ..< 13]) ?? 0
-        for _ in 0..<12 {
-            hour = hour + 1
-            if hour == 24 { hour = 0 }
-                result.append(String(hour))
-        }
-        return result
-    }
-    
 }
 

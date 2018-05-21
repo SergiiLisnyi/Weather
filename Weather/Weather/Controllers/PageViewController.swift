@@ -7,60 +7,55 @@
 //
 
 import UIKit
+import MapKit
+import CoreLocation
 
 class PageViewController: UIPageViewController {
     
-     var arrayCity = ["London", "Kiev"]
-    // var arrayCity = [String]()
-    var controllers: [WeatherController] = []
-    var model = CityModel()
-    
+    var arrayCity = [TypeInputData]()
+    var controllers = [WeatherController]()
+    let locationManager = CLLocationManager()
+ 
     var pages: [WeatherController] {
         get {
-            if controllers.count == arrayCity.count {
-                    return controllers
-            } else if controllers.count + 1 == arrayCity.count {
+            if controllers.count + 1 == arrayCity.count {
                 guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController
                     else { return controllers }
-                controller.type = TypeInputData.city(name: arrayCity.last!)
-                controller.modelCity = self.model
+                controller.type = arrayCity.last!
                 controller.delegate = self
                 controllers.append(controller)
                 return controllers
-           }
+            }
             return controllers
         }
     }
-  
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        updateLocation()
         dataSource = self
-        loadData()
-        guard let firstVC = self.pages.first else { return }
-        setViewControllers([firstVC], direction: .forward, animated: true, completion: nil)
     }
     
-    func loadData() {
-        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { return }
-        controller.type = TypeInputData.location()
-        controller.delegate = self
-        controller.modelCity = self.model
-        controllers.append(controller)
-        
-        if arrayCity.count>0 {
-            for _ in 1..<arrayCity.count {
-                guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { break }
-                controller.type = TypeInputData.city(name: arrayCity.last!)
-                controller.delegate = self
-                controller.modelCity = self.model
-                controllers.append(controller)
-            }
+    fileprivate func updateLocation() {
+        self.locationManager.requestAlwaysAuthorization()
+        self.locationManager.requestWhenInUseAuthorization()
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startUpdatingLocation()
         }
     }
     
-    func updateData(array: [String]) {
-        arrayCity = array
-    } 
+    fileprivate func loadData(latitude: String, longitude: String) {
+            for i in 0..<arrayCity.count {
+                guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { break }
+                controller.type = arrayCity[i]
+                controller.delegate = self
+                controllers.append(controller)
+            }
+        guard let firstVC = self.pages.first else { return }
+        setViewControllers([firstVC], direction: .forward, animated: true, completion: nil)
+    }
 }
 
  //MARK: UIPageViewControllerDataSource
@@ -71,22 +66,33 @@ extension PageViewController: UIPageViewControllerDataSource {
         if viewControllerIndex - 1 < 0  {
             return nil
         }
-        return pages[viewControllerIndex-1]
+        return pages[viewControllerIndex - 1]
         
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         guard let viewControllerIndex = pages.index(of: viewController as! WeatherController) else { return nil }
     
-        if viewControllerIndex+1 >= controllers.count {
+        if viewControllerIndex + 1 >= controllers.count {
             return nil
         }
-        return controllers[viewControllerIndex+1]
+        return controllers[viewControllerIndex + 1]
     }
 }
 
-
-
+extension PageViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
+        let latitude = String(locValue.latitude)
+        let longitude = String(locValue.longitude)
+        arrayCity.append(.location(latitude: latitude, longitude: longitude))
+        
+        arrayCity.append(.location(latitude: latitude, longitude: longitude))//FIXME
+        
+        loadData(latitude: latitude, longitude: longitude)
+        
+    }
+}
 
 
 

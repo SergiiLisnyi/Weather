@@ -9,7 +9,7 @@
 import Foundation
 
 enum TypeInputData {
-    case location()
+    case location(latitude: String, longitude: String)
     case city(name: String)
 }
 

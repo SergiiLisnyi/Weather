@@ -13,10 +13,8 @@ class WeatherService {
     var hourlyWeather = ForecastWeatherHourly()
     var daysWeather = ForecastWeatherOnDays()
 
-    
-    func getWeather(latitude: String, longitude: String, updateScreen: @escaping ()->()) {
+    func getWeatherByLocation(latitude: String, longitude: String, updateScreen: @escaping ()->()) {
         let url = URL(string: ApiData.BASE_URL_LOCATION + ApiData.APIKEY + "&q=" + latitude + "%2C%20" + longitude)
-        
         let task = URLSession.shared.dataTask(with: url!) {
             (data, response, error) in
             guard error == nil else { print("returning error"); return }
@@ -32,8 +30,7 @@ class WeatherService {
         task.resume()
     }
     
-    
-    func getWeatherName(name: String, updateScreen: @escaping ()->()) {
+    func getWeatherByCity(name: String, updateScreen: @escaping ()->()) {
         let url = URL(string: ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + name)
         let task = URLSession.shared.dataTask(with: url!) {
             (data, response, error) in
@@ -50,10 +47,8 @@ class WeatherService {
         task.resume()
     }
     
-    
     fileprivate func getWeatherOnFiveDay(keyCity: String, updateScreen: @escaping ()->())  {
         let url = URL(string: ApiData.BASE_URL + "daily/5day/" + keyCity + "?apikey=" + ApiData.APIKEY + "&metric=true")
-        
         let task = URLSession.shared.dataTask(with: url!) {
             (data, response, error) in
             guard error == nil else { print("returning error"); return }
@@ -68,11 +63,8 @@ class WeatherService {
         task.resume()
     }
 
-    
     fileprivate func getWeatherOnHourly(city: String, keyCity: String, updateScreen: @escaping ()->())  {
-
         let url = URL(string: ApiData.BASE_URL + "hourly/12hour/" + keyCity + "?apikey=" + ApiData.APIKEY + "&metric=true")
-        
         let task = URLSession.shared.dataTask(with: url!) {
             (data, response, error) in
             guard error == nil else { print("returning error"); return }

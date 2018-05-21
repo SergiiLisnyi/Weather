@@ -9,12 +9,6 @@ import SwiftyJSON
 import Foundation
 
 class CityModel {
-    
-    init() {
-    }
- 
-    var arrayCity = ["London", "Kiev"]
-    // var arrayCity = [String]()
     func getCityName(name: String, updateScreen: @escaping (Bool)->()) {
         let url = URL(string: ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + name)
         let task = URLSession.shared.dataTask(with: url!) {
@@ -23,18 +17,7 @@ class CityModel {
         guard let content = data else { print("not returning data") ; return }
         let clearJSON = JSON(content)
         let city = clearJSON[0]["EnglishName"].description
-
-        if city != "null" {
-            if  self.arrayCity.contains(city) {
-                updateScreen(false)
-            }
-            updateScreen(true)
-            print(city)
-        }
-        else {
-            updateScreen(false)
-            print("null")
-        }
+        updateScreen(city != "null")
         }
         task.resume()
     }

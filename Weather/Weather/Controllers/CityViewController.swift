@@ -11,10 +11,10 @@ import UIKit
 class CityViewController: UIViewController {
  
     @IBOutlet weak var enterLabel: UILabel!
-    var delegate: PageViewController?
     @IBOutlet weak var nameLabel: UITextField!
+    var delegate: PageViewController?
+    var modelCity = CityModel()
     
-    var modelCity: CityModel!
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -24,13 +24,12 @@ class CityViewController: UIViewController {
         isValidate(nameCity: nameCity)
     }
     
-    func isValidate(nameCity: String) {
+    fileprivate func isValidate(nameCity: String) {
         guard let data = self.delegate else { return }
         modelCity.getCityName(name: nameCity, updateScreen: { isValidateName in
             DispatchQueue.main.sync {
                 if isValidateName {
-                    self.modelCity.arrayCity.append(nameCity)
-                    data.updateData(array: self.modelCity.arrayCity)
+                    data.arrayCity.append(TypeInputData.city(name: nameCity)) //FIX NAME
                     self.dismiss(animated: true)
                 }
                 else {

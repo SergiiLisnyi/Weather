@@ -8,72 +8,48 @@
 
 import UIKit
 
-import CoreLocation
-import MapKit
+//import CoreLocation
+//import MapKit
 
 class WeatherController: UIViewController {
 
     var model = WeatherService()
     var delegate: PageViewController?
-    var nameCity: String!
-    var modelCity: CityModel!
-
-    @IBOutlet weak var dataCollection: UICollectionView!
-    @IBOutlet weak var dataTable: UITableView!
-
-    var latitude = "51.50998"
-    var longitude =  "-0.1337"
-    
-    
     var arrayTempHourly = [String]()
     var arrayTimeHourly = [String]()
     var arrayNameDay = [String]()
     var arrayMinTempDay = [String]()
     var arrayMaxTempDay = [String]()
-    
     var type: TypeInputData!
+
     
+    @IBOutlet weak var dataCollection: UICollectionView!
+    @IBOutlet weak var dataTable: UITableView!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
     
-    let locationManager = CLLocationManager()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateLocation()
-
-        guard let type = type else { return }
-        
-        switch type {
-        case TypeInputData.location:
-            getWeather(latitude: latitude, longitude: longitude)
-        
-        case TypeInputData.city(let name):
-            getWeatherName(name: name)
-        }
+        getWeather()
     }
 
-    func updateLocation() {
-        // Ask for Authorisation from the User.
-        self.locationManager.requestAlwaysAuthorization()
-        // For use in foreground
-        self.locationManager.requestWhenInUseAuthorization()
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            locationManager.startUpdatingLocation()
-        }
-    }
-    
     @IBAction func addButtonTapped(_ sender: UIButton) {
         guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SelectNameViewController") as? CityViewController else { return }
         controller.delegate = delegate
-        controller.modelCity = self.modelCity
         self.present(controller, animated: true, completion: nil)
     }
     
+    fileprivate func getWeather() {
+        guard let type = type else { return }
+        switch type {
+        case TypeInputData.location(let latitude, let longitude):
+            getWeatherByLocation(latitude: latitude, longitude: longitude)
+        case TypeInputData.city(let name):
+            getWeatherByCity(name: name)
+        }
+    }
     
-    func updateScreen() {
+    fileprivate func updateScreen() {
 
         cityLabel.text = model.hourlyWeather.city
         temperatureLabel.text = model.hourlyWeather.tempCurrent
@@ -88,33 +64,22 @@ class WeatherController: UIViewController {
         dataTable.reloadData()
     }
     
-    func getWeather(latitude: String, longitude: String) {
-        model.getWeather(latitude: latitude, longitude: longitude, updateScreen: {
+    fileprivate func getWeatherByLocation(latitude: String, longitude: String) {
+        model.getWeatherByLocation(latitude: latitude, longitude: longitude, updateScreen: {
             DispatchQueue.main.sync {
                 self.updateScreen()
             }
         })
     }
     
-    func getWeatherName(name: String) {
-        model.getWeatherName(name: name, updateScreen: {
+    fileprivate func getWeatherByCity(name: String) {
+        model.getWeatherByCity(name: name, updateScreen: {
             DispatchQueue.main.sync {
                 self.updateScreen()
             }
         })
     }
 }
-
-extension WeatherController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
-            latitude = String(locValue.latitude)
-            longitude = String(locValue.longitude)
-        
-           // getWeather(latitude: latitude, longitude: longitude)
-    }
-}
-
 
 extension WeatherController: UITableViewDelegate, UITableViewDataSource {
     

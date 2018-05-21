@@ -13,6 +13,7 @@ class ParserJSON {
     
     static let hours = 12
     static let midnight = 24
+    static let day = 5
     
     static func getDayOfWeek(_ today:String) -> String {
         let formatter  = DateFormatter()
@@ -22,7 +23,6 @@ class ParserJSON {
         dateFormatter.dateFormat = "EEEE"
         return dateFormatter.string(from: todayDate).capitalized
     }
-    
     
     static func getTempHourly(json: JSON) -> [String] {
         var result = [String]()
@@ -46,7 +46,7 @@ class ParserJSON {
     
     static func getNameDay(json: JSON) -> [String] {
         var result = [String]()
-        for i in 0..<5 {
+        for i in 0..<day {
             let date = json["DailyForecasts"][i]["Date"].description
             let onlyDay = date[0 ..< 10]
             result.append(ParserJSON.getDayOfWeek(onlyDay))
@@ -56,7 +56,7 @@ class ParserJSON {
     
     static func getMinTempDay(json: JSON) -> [String] {
         var result = [String]()
-        for i in 0..<5 {
+        for i in 0..<day {
             result.append(json["DailyForecasts"][i]["Temperature"]["Minimum"]["Value"].description + "°")
         }
         return result
@@ -64,11 +64,9 @@ class ParserJSON {
     
     static func getMaxTempDay(json: JSON) -> [String] {
         var result = [String]()
-        for i in 0..<5 {
+        for i in 0..<day {
             result.append(json["DailyForecasts"][i]["Temperature"]["Maximum"]["Value"].description + "°")
         }
         return result
     }
-    
-    
 }

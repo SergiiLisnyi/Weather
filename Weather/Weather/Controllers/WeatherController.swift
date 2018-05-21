@@ -8,9 +8,6 @@
 
 import UIKit
 
-//import CoreLocation
-//import MapKit
-
 class WeatherController: UIViewController {
 
     var model = WeatherService()

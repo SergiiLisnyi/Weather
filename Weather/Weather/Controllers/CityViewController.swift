@@ -13,7 +13,6 @@ class CityViewController: UIViewController {
     @IBOutlet weak var enterLabel: UILabel!
     @IBOutlet weak var nameLabel: UITextField!
     var delegate: PageViewController?
-    var modelCity = CityModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,15 +20,15 @@ class CityViewController: UIViewController {
     
     @IBAction func selectButtonTapped(_ sender: UIButton) {
         let nameCity = nameLabel.text!
-        isValidate(nameCity: nameCity)
+        isValid(nameCity: nameCity)
     }
     
-    fileprivate func isValidate(nameCity: String) {
+    fileprivate func isValid(nameCity: String) {
         guard let data = self.delegate else { return }
-        modelCity.getCityName(name: nameCity, updateScreen: { isValidateName in
+        data.modelCity.getCityName(name: nameCity, updateScreen: { isValidateName in
             DispatchQueue.main.sync {
                 if isValidateName {
-                    data.arrayCity.append(TypeInputData.city(name: nameCity)) //FIX NAME
+                    data.modelCity.arrayCity.append(TypeInputData.city(name: nameCity)) //FIX NAME
                     self.dismiss(animated: true)
                 }
                 else {

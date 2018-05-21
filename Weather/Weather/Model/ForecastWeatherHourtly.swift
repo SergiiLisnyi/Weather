@@ -9,6 +9,7 @@
 import Foundation
 
 struct ForecastWeatherHourly {
+    
     var city: String?
     var tempCurrent: String?
     var arrayTempHourly = [String]()

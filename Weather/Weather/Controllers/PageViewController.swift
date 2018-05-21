@@ -12,16 +12,16 @@ import CoreLocation
 
 class PageViewController: UIPageViewController {
     
-    var arrayCity = [TypeInputData]()
+    var modelCity = CityModel()
     var controllers = [WeatherController]()
     let locationManager = CLLocationManager()
  
     var pages: [WeatherController] {
         get {
-            if controllers.count + 1 == arrayCity.count {
+            if controllers.count + 1 == modelCity.arrayCity.count {
                 guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController
                     else { return controllers }
-                controller.type = arrayCity.last!
+                controller.type = modelCity.arrayCity.last!
                 controller.delegate = self
                 controllers.append(controller)
                 return controllers
@@ -46,10 +46,10 @@ class PageViewController: UIPageViewController {
         }
     }
     
-    fileprivate func loadData(latitude: String, longitude: String) {
-            for i in 0..<arrayCity.count {
+    fileprivate func loadData() {
+            for i in 0..<modelCity.arrayCity.count {
                 guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { break }
-                controller.type = arrayCity[i]
+                controller.type = modelCity.arrayCity[i]
                 controller.delegate = self
                 controllers.append(controller)
             }
@@ -85,11 +85,11 @@ extension PageViewController: CLLocationManagerDelegate {
         guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
         let latitude = String(locValue.latitude)
         let longitude = String(locValue.longitude)
-        arrayCity.append(.location(latitude: latitude, longitude: longitude))
         
-        arrayCity.append(.location(latitude: latitude, longitude: longitude))//FIXME
+        modelCity.arrayCity.append(.location(latitude: latitude, longitude: longitude))
+        modelCity.arrayCity.append(.location(latitude: latitude, longitude: longitude))//FIXME
         
-        loadData(latitude: latitude, longitude: longitude)
+        loadData()
         
     }
 }

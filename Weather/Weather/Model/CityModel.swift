@@ -9,6 +9,9 @@ import SwiftyJSON
 import Foundation
 
 class CityModel {
+    
+    var arrayCity = [TypeInputData]()
+    
     func getCityName(name: String, updateScreen: @escaping (Bool)->()) {
         let url = URL(string: ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + name)
         let task = URLSession.shared.dataTask(with: url!) {

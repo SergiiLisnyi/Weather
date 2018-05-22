@@ -8,6 +8,14 @@
 import SwiftyJSON
 import Foundation
 
+
+//struct DataModel {
+//
+//    var city: TypeInputData
+//    var forecast: WeatherService?
+//
+//}
+
 class CityModel {
     
     var arrayCity = [TypeInputData]()

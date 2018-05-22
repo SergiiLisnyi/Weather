@@ -24,22 +24,19 @@ class ParserJSON {
         return dateFormatter.string(from: todayDate).capitalized
     }
     
-    static func getTempHourly(json: JSON) -> [String] {
-        var result = [String]()
-        for i in 0..<hours {
-            result.append(json[i]["Temperature"]["Value"].description + "°")
-        }
-        return result
-    }
+
     
-    static func getTime(json: JSON) -> [String] {
-        var result = [String]()
+
+    
+    
+    static func getTempHourly(json: JSON) -> [(time: String, temp: String)] {
+        var result = [(time: String, temp: String)]()
         let time = json[0]["DateTime"].description
         var hour = Int(time[11 ..< 13]) ?? 0
-        for _ in 0..<hours {
+        for i in 0..<hours {
             hour = hour + 1
             if hour == midnight { hour = 0 }
-            result.append(String(hour))
+            result.append((String(hour), json[i]["Temperature"]["Value"].description))
         }
         return result
     }

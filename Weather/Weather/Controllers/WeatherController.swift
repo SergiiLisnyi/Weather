@@ -10,16 +10,8 @@ import UIKit
 
 class WeatherController: UIViewController {
 
-    var model = WeatherService()
+    var model: WeatherService!
     var delegate: PageViewController?
-    var arrayTempHourly = [String]()
-    var arrayTimeHourly = [String]()
-    var arrayNameDay = [String]()
-    var arrayMinTempDay = [String]()
-    var arrayMaxTempDay = [String]()
-    var type: TypeInputData!
-
-    
     @IBOutlet weak var dataCollection: UICollectionView!
     @IBOutlet weak var dataTable: UITableView!
     @IBOutlet weak var cityLabel: UILabel!
@@ -27,7 +19,7 @@ class WeatherController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        getWeather()
+        updateScreen()
     }
 
     @IBAction func addButtonTapped(_ sender: UIButton) {
@@ -35,46 +27,12 @@ class WeatherController: UIViewController {
         controller.delegate = delegate
         self.present(controller, animated: true, completion: nil)
     }
-    
-    fileprivate func getWeather() {
-        guard let type = type else { return }
-        switch type {
-        case TypeInputData.location(let latitude, let longitude):
-            getWeatherByLocation(latitude: latitude, longitude: longitude)
-        case TypeInputData.city(let name):
-            getWeatherByCity(name: name)
-        }
-    }
-    
-    fileprivate func updateScreen() {
 
+    func updateScreen() {
         cityLabel.text = model.hourlyWeather.city
         temperatureLabel.text = model.hourlyWeather.tempCurrent
-        arrayTempHourly = model.hourlyWeather.arrayTempHourly
-        arrayTimeHourly = model.hourlyWeather.arrayTimeHourly
-        
-        arrayNameDay = model.daysWeather.arrayNameDay
-        arrayMinTempDay = model.daysWeather.arrayMinTempDay
-        arrayMaxTempDay = model.daysWeather.arrayMaxTempDay
-        
         dataCollection.reloadData()
         dataTable.reloadData()
-    }
-    
-    fileprivate func getWeatherByLocation(latitude: String, longitude: String) {
-        model.getWeatherByLocation(latitude: latitude, longitude: longitude, updateScreen: {
-            DispatchQueue.main.sync {
-                self.updateScreen()
-            }
-        })
-    }
-    
-    fileprivate func getWeatherByCity(name: String) {
-        model.getWeatherByCity(name: name, updateScreen: {
-            DispatchQueue.main.sync {
-                self.updateScreen()
-            }
-        })
     }
 }
 
@@ -84,31 +42,31 @@ extension WeatherController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TableDataViewCell.identifier, for: indexPath) as? TableDataViewCell else  {
             return UITableViewCell()
         }
-        cell.configureWith(nameDay: arrayNameDay[indexPath.row], tempMax: arrayMaxTempDay[indexPath.row], tempMin: arrayMinTempDay[indexPath.row])
+        cell.configureWith(name: model.daysWeather[indexPath.row])
         return cell
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrayNameDay.count
+        return model.daysWeather.count
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
-
 }
 
 
 extension WeatherController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  arrayTempHourly.count
+        return  model.hourlyWeather.arrayTemp.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else  {
             return UICollectionViewCell()
         }
-        cell.configureWith(temp: arrayTempHourly[indexPath.row], time: arrayTimeHourly[indexPath.row])
+        cell.configureWith(temp: model.hourlyWeather.arrayTemp[indexPath.row].temp, time: model.hourlyWeather.arrayTemp[indexPath.row].time)
         return cell
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 
 struct ForecastWeatherOnDays {
-    var arrayNameDay = [String]()
-    var arrayMinTempDay = [String]()
-    var arrayMaxTempDay = [String]()
+    var nameDay = ""
+    var minTempDay = ""
+    var maxTempDay = ""
 }

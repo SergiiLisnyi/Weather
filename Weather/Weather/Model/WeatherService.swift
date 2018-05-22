@@ -80,6 +80,9 @@ class WeatherService {
                                                     tempCurrent: clearJSON[0]["Temperature"]["Value"].description + "°",
                                                     arrayTemp: ParserJSON.getTempHourly(json: clearJSON))
             
+            print(city)
+            print(clearJSON[0]["Temperature"]["Value"].description)
+            
             updateScreen()
         }
         task.resume()

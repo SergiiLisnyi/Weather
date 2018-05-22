@@ -16,13 +16,15 @@ class WeatherController: UIViewController {
     @IBOutlet weak var dataTable: UITableView!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
+    @IBOutlet weak var navigationButton: UINavigationItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         updateScreen()
+        navigationButton.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: #selector(add))
     }
-
-    @IBAction func addButtonTapped(_ sender: UIButton) {
+    
+    @objc func add() {
         guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SelectNameViewController") as? CityViewController else { return }
         controller.delegate = delegate
         self.present(controller, animated: true, completion: nil)
@@ -42,7 +44,7 @@ extension WeatherController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TableDataViewCell.identifier, for: indexPath) as? TableDataViewCell else  {
             return UITableViewCell()
         }
-        cell.configureWith(name: model.daysWeather[indexPath.row])
+        cell.configureWith(forecast: model.daysWeather[indexPath.row])
         return cell
     }
     

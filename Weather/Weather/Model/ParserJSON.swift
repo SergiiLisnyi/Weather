@@ -13,7 +13,6 @@ class ParserJSON {
     
     static let hours = 12
     static let midnight = 24
-    static let day = 5
     
     static func getDayOfWeek(_ today:String) -> String {
         let formatter  = DateFormatter()
@@ -24,11 +23,6 @@ class ParserJSON {
         return dateFormatter.string(from: todayDate).capitalized
     }
     
-
-    
-
-    
-    
     static func getTempHourly(json: JSON) -> [(time: String, temp: String)] {
         var result = [(time: String, temp: String)]()
         let time = json[0]["DateTime"].description
@@ -37,32 +31,6 @@ class ParserJSON {
             hour = hour + 1
             if hour == midnight { hour = 0 }
             result.append((String(hour), json[i]["Temperature"]["Value"].description))
-        }
-        return result
-    }
-    
-    static func getNameDay(json: JSON) -> [String] {
-        var result = [String]()
-        for i in 0..<day {
-            let date = json["DailyForecasts"][i]["Date"].description
-            let onlyDay = date[0 ..< 10]
-            result.append(ParserJSON.getDayOfWeek(onlyDay))
-        }
-        return result
-    }
-    
-    static func getMinTempDay(json: JSON) -> [String] {
-        var result = [String]()
-        for i in 0..<day {
-            result.append(json["DailyForecasts"][i]["Temperature"]["Minimum"]["Value"].description + "°")
-        }
-        return result
-    }
-    
-    static func getMaxTempDay(json: JSON) -> [String] {
-        var result = [String]()
-        for i in 0..<day {
-            result.append(json["DailyForecasts"][i]["Temperature"]["Maximum"]["Value"].description + "°")
         }
         return result
     }

@@ -1,3 +1,4 @@
+
 //
 //  PageViewController.swift
 //  Weather
@@ -5,7 +6,6 @@
 //  Created by Sergii Lisnyi on 5/16/18.
 //  Copyright © 2018 Sergii Lisnyi. All rights reserved.
 //
-
 import UIKit
 import MapKit
 import CoreLocation
@@ -15,7 +15,7 @@ class PageViewController: UIPageViewController {
     var modelCity = CityModel()
     var controllers = [WeatherController]()
     let locationManager = CLLocationManager()
-
+    
     var pages: [WeatherController] {
         get {
             if controllers.count + 1 == modelCity.arrayCity.count {
@@ -43,9 +43,11 @@ class PageViewController: UIPageViewController {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.startUpdatingLocation()
+        } else {
+            print("Location services not endabled")
         }
-    }
- 
+    } 
+    
     fileprivate func loadData() {
         for i in 0..<modelCity.arrayCity.count {
             guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { break }
@@ -88,7 +90,3 @@ extension PageViewController: CLLocationManagerDelegate {
         loadData()
     }
 }
-
-
-
-

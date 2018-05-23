@@ -20,10 +20,18 @@ class WeatherController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setBackground()
         navigationButton.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: #selector(add))
         modelWeather.update {
             self.updateScreen()
         }
+    }
+    
+    
+    func setBackground() {
+        let imageView = UIImageView(frame: view.bounds)
+        imageView.image = UIImage(named: "img")
+        self.view.insertSubview(imageView, at: 0)
     }
     
     @objc func add() {

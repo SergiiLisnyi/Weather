@@ -34,9 +34,6 @@ class ModelWeatherByCity: ModelWeatherProtocol {
             
             let city = clearJSON[0]["EnglishName"].description
             let key = clearJSON[0]["Key"].description
-            
-            print("weatherByCityModel" + city)
-            
             self.getWeatherOnFiveDay(keyCity: key, updateScreen: updateScreen)
             self.getWeatherOnHourly(city: city, keyCity: key, updateScreen: updateScreen)
         }
@@ -75,8 +72,6 @@ class ModelWeatherByCity: ModelWeatherProtocol {
                                                        tempCurrent: clearJSON[0]["Temperature"]["Value"].description + "°",
                                                        arrayTemp: ParserJSON.getTempHourly(json: clearJSON))
             
-            print(city)
-            print(clearJSON[0]["Temperature"]["Value"].description)
             
             updateScreen()
         }

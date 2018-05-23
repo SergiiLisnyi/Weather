@@ -15,33 +15,23 @@ class PageViewController: UIPageViewController {
     var modelCity = CityModel()
     var controllers = [WeatherController]()
     let locationManager = CLLocationManager()
-    
-    var pages: [WeatherController] { // FIXME
+
+    var pages: [WeatherController] {
         get {
             if controllers.count + 1 == modelCity.arrayCity.count {
                 guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { return controllers }
-                let model = WeatherService()
-                getWeather(type: modelCity.arrayCity.last!, model: model)
-                controller.model = model
+                let modelWeather = modelCity.getModel(type: modelCity.arrayCity.last!)
+                controller.modelWeather = modelWeather
                 controller.delegate = self
                 controllers.append(controller)
-
                 return controllers
-            } else if controllers.count == 0 {
-                guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { return controllers }
-
-                let model = WeatherService()
-                controller.model = model
-                controller.delegate = self
-                controllers.append(controller)
             }
             return controllers
         }
     }
-   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadData()
         updateLocation()
         dataSource = self
     }
@@ -55,30 +45,17 @@ class PageViewController: UIPageViewController {
             locationManager.startUpdatingLocation()
         }
     }
-    
+ 
     fileprivate func loadData() {
+        for i in 0..<modelCity.arrayCity.count {
+            guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { break }
+            let modelWeather = modelCity.getModel(type: modelCity.arrayCity[i])
+            controller.modelWeather = modelWeather
+            controller.delegate = self
+            controllers.append(controller)
+        }
         guard let firstVC = self.pages.first else { return }
         setViewControllers([firstVC], direction: .forward, animated: true, completion: nil)
-    }
-    
-    fileprivate func getWeather(type: TypeInputData, model: WeatherService) {
-        switch type {
-        case TypeInputData.location(let latitude, let longitude):
-            model.getWeatherByLocation(latitude: latitude, longitude: longitude, updateScreen: {
-                DispatchQueue.main.sync {
-                   // controller.model = model
-                }
-
-
-            })
-        case TypeInputData.city(let name):
-            model.getWeatherByCity(name: name, updateScreen: {
-                DispatchQueue.main.sync {
-                  //  controller.model = model
-                }
-            })
-        }
-        print(model.hourlyWeather.city)
     }
 }
 
@@ -106,16 +83,9 @@ extension PageViewController: CLLocationManagerDelegate {
         guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
         let latitude = String(locValue.latitude)
         let longitude = String(locValue.longitude)
-
         modelCity.arrayCity.append(TypeInputData.location(latitude: latitude, longitude: longitude))
         modelCity.arrayCity.append(TypeInputData.location(latitude: latitude, longitude: longitude))
-
-        guard let firstVC = self.pages.first else { return }
-        firstVC.model.getWeatherByLocation(latitude: latitude, longitude: longitude, updateScreen: {
-            DispatchQueue.main.sync {
-                firstVC.updateScreen()
-            }
-        })
+        loadData()
     }
 }
 

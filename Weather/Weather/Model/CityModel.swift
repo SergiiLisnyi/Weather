@@ -12,7 +12,7 @@ class CityModel {
     
     var arrayCity = [TypeInputData]()
     
-    func getCityName(name: String, updateScreen: @escaping (Bool)->()) {
+    func getCityName(name: String, updateScreen: @escaping (Bool, String)->()) {
         let url = URL(string: ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + name)
         let task = URLSession.shared.dataTask(with: url!) {
         (data, response, error) in
@@ -20,9 +20,20 @@ class CityModel {
         guard let content = data else { print("not returning data") ; return }
         let clearJSON = JSON(content)
         let city = clearJSON[0]["EnglishName"].description
-        updateScreen(city != "null")
+        updateScreen(city != "null", city)
         }
         task.resume()
     }
+    
+    func getModel(type: TypeInputData) -> ModelWeatherProtocol {
+        switch type {
+        case .city(let name):
+            return ModelWeatherByCity(city: name)
+        case .location(let latitude, let longitude):
+            return ModelWeatherByLocation(latitude: latitude, longitude: longitude)
+            
+        }
+    }
+    
 }
 

@@ -23,12 +23,16 @@ class CityViewController: UIViewController {
         isValid(nameCity: nameCity)
     }
     
+    @IBAction func canselButtonTapped(_ sender: UIButton) {
+        self.dismiss(animated: true)
+    }
+    
     fileprivate func isValid(nameCity: String) {
         guard let data = self.delegate else { return }
-        data.modelCity.getCityName(name: nameCity, updateScreen: { isValidateName in
+        data.modelCity.getCityName(name: nameCity, updateScreen: { isValidateName, name in
             DispatchQueue.main.sync {
                 if isValidateName {
-                    data.modelCity.arrayCity.append(TypeInputData.city(name: nameCity)) //FIX NAME
+                    data.modelCity.arrayCity.append(TypeInputData.city(name: name))
                     self.dismiss(animated: true)
                 }
                 else {

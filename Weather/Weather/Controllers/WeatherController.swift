@@ -10,7 +10,7 @@ import UIKit
 
 class WeatherController: UIViewController {
 
-    var model: WeatherService!
+    var modelWeather: ModelWeatherProtocol!
     var delegate: PageViewController?
     @IBOutlet weak var dataCollection: UICollectionView!
     @IBOutlet weak var dataTable: UITableView!
@@ -20,8 +20,10 @@ class WeatherController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateScreen()
         navigationButton.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: #selector(add))
+        modelWeather.update {
+            self.updateScreen()
+        }
     }
     
     @objc func add() {
@@ -31,10 +33,12 @@ class WeatherController: UIViewController {
     }
 
     func updateScreen() {
-        cityLabel.text = model.hourlyWeather.city
-        temperatureLabel.text = model.hourlyWeather.tempCurrent
-        dataCollection.reloadData()
-        dataTable.reloadData()
+        DispatchQueue.main.async { 
+            self.cityLabel.text = self.modelWeather.hourlyWeather.city
+            self.temperatureLabel.text = self.modelWeather.hourlyWeather.tempCurrent
+            self.dataCollection.reloadData()
+            self.dataTable.reloadData()
+        }
     }
 }
 
@@ -44,12 +48,12 @@ extension WeatherController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TableDataViewCell.identifier, for: indexPath) as? TableDataViewCell else  {
             return UITableViewCell()
         }
-        cell.configureWith(forecast: model.daysWeather[indexPath.row])
+        cell.configureWith(forecast: modelWeather.daysWeather[indexPath.row])
         return cell
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return model.daysWeather.count
+        return modelWeather.daysWeather.count
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -61,14 +65,14 @@ extension WeatherController: UITableViewDelegate, UITableViewDataSource {
 extension WeatherController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  model.hourlyWeather.arrayTemp.count
+        return  modelWeather.hourlyWeather.arrayTemp.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else  {
             return UICollectionViewCell()
         }
-        cell.configureWith(temp: model.hourlyWeather.arrayTemp[indexPath.row].temp, time: model.hourlyWeather.arrayTemp[indexPath.row].time)
+        cell.configureWith(temp: modelWeather.hourlyWeather.arrayTemp[indexPath.row].temp, time: modelWeather.hourlyWeather.arrayTemp[indexPath.row].time)
         return cell
     }
 }

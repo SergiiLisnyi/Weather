@@ -10,8 +10,13 @@ import Foundation
 
 class CityModel {
     
-    var arrayCity = [TypeInputData]()
-    
+    var arrayCity: [TypeInputData] = [] {
+        didSet {
+            updateView?()
+        }
+    }
+    var updateView: (()->Void)?
+
     func getCityName(name: String, updateScreen: @escaping (Bool, String)->()) {
         let url = URL(string: ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + name)
         let task = URLSession.shared.dataTask(with: url!) {
@@ -29,9 +34,8 @@ class CityModel {
         switch type {
         case .city(let name):
             return ModelWeatherByCity(city: name)
-        case .location(let latitude, let longitude):
-            return ModelWeatherByLocation(latitude: latitude, longitude: longitude)
-            
+            case .location():
+                return ModelWeatherByLocation()
         }
     }
     

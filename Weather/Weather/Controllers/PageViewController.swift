@@ -7,86 +7,91 @@
 //  Copyright © 2018 Sergii Lisnyi. All rights reserved.
 //
 import UIKit
-import MapKit
-import CoreLocation
 
 class PageViewController: UIPageViewController {
     
     var modelCity = CityModel()
     var controllers = [WeatherController]()
-    let locationManager = CLLocationManager()
+    var arrayWeather = [ModelWeatherProtocol]()
     
-    var pages: [WeatherController] {
-        get {
-            if controllers.count + 1 == modelCity.arrayCity.count {
-                guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { return controllers }
-                let modelWeather = modelCity.getModel(type: modelCity.arrayCity.last!)
-                controller.modelWeather = modelWeather
-                controller.delegate = self
-                controllers.append(controller)
-                return controllers
-            }
-            return controllers
+    func displayController(index: Int) -> WeatherController? {
+        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { return nil }
+        if arrayWeather.indices.contains(index) {
+            controller.modelWeather = arrayWeather[index]
+            controller.delegate = self
         }
+        else {
+            let modelWeather = modelCity.getModel(type: modelCity.arrayCity[index])
+            controller.modelWeather = modelWeather
+            controller.delegate = self
+            arrayWeather.append(modelWeather)
+        }
+        return controller
+    }
+
+    func update() {
+        let city = self.modelCity.arrayCity.last
+        let modelWeather = modelCity.getModel(type: city!)
+        arrayWeather.append(modelWeather)
+        guard let controller = displayController(index: arrayWeather.count - 1) else { return }
+        setViewControllers([controller], direction: .forward, animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateLocation()
+        modelCity.updateView = update
+        modelCity.arrayCity.append(TypeInputData.location())
+        loadData()
         dataSource = self
     }
     
-    fileprivate func updateLocation() {
-        self.locationManager.requestAlwaysAuthorization()
-        self.locationManager.requestWhenInUseAuthorization()
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            locationManager.startUpdatingLocation()
-        } else {
-            print("Location services not endabled")
-        }
-    } 
-    
     fileprivate func loadData() {
+        guard let controller = displayController(index: 0) else { return }
+        setViewControllers([controller], direction: .forward, animated: true, completion: nil)
+    }
+    
+    func getIndex(_ city: ModelWeatherProtocol) -> Int? {
         for i in 0..<modelCity.arrayCity.count {
-            guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { break }
-            let modelWeather = modelCity.getModel(type: modelCity.arrayCity[i])
-            controller.modelWeather = modelWeather
-            controller.delegate = self
-            controllers.append(controller)
+            switch modelCity.arrayCity[i] {
+            case .city(let name):
+                if name == city.hourlyWeather.city {
+                    return i
+                }
+            case .location():
+                if city as? ModelWeatherByLocation != nil {
+                    return i
+                }
+            }
         }
-        guard let firstVC = self.pages.first else { return }
-        setViewControllers([firstVC], direction: .forward, animated: true, completion: nil)
+        return nil
     }
 }
 
-//MARK: UIPageViewControllerDataSource
-extension PageViewController: UIPageViewControllerDataSource {
+extension PageViewController: UIPageViewControllerDelegate, UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let viewControllerIndex = pages.index(of: viewController as! WeatherController) else { return nil }
+        guard let controller = viewController as? WeatherController,
+            let viewControllerIndex = getIndex(controller.modelWeather)
+            else { return nil }
         if viewControllerIndex - 1 < 0  {
             return nil
         }
-        return pages[viewControllerIndex - 1]
+        return displayController(index: viewControllerIndex - 1)
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let viewControllerIndex = pages.index(of: viewController as! WeatherController) else { return nil }
-        if viewControllerIndex + 1 >= controllers.count {
+        guard let controller = viewController as? WeatherController,
+            let viewControllerIndex = getIndex(controller.modelWeather)
+            else { return nil }
+        if viewControllerIndex + 1 >= modelCity.arrayCity.count {
             return nil
         }
-        return controllers[viewControllerIndex + 1]
+        return displayController(index: viewControllerIndex + 1)
     }
 }
 
-extension PageViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
-        let latitude = String(locValue.latitude)
-        let longitude = String(locValue.longitude)
-        modelCity.arrayCity.append(TypeInputData.location(latitude: latitude, longitude: longitude))
-        modelCity.arrayCity.append(TypeInputData.location(latitude: latitude, longitude: longitude))
-        loadData()
-    }
-}
+
+
+
+
+
+

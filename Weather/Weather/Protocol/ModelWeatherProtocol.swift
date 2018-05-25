@@ -13,6 +13,8 @@ protocol ModelWeatherProtocol : class {
     var hourlyWeather: ForecastWeatherHourly? { get set }
     var daysWeather: [ForecastWeatherOnDays] { get set }
     
+    var cityName: String! { get set }
+    
     func update(updateScreen: @escaping ()->Void)
 }
 
@@ -45,7 +47,7 @@ extension ModelWeatherProtocol  {
         Request.request(url: url, complete: { data in
             self.hourlyWeather = ForecastWeatherHourly(city: city,
                                                        tempCurrent: data[0]["Temperature"]["Value"].description + "°",
-                                                       arrayTemp: ParserJSON.getTempHourly(json: data))
+                                                       arrayWeatherHourly: ParserJSON.getTempHourly(json: data))
             updateScreen()
         })
     }   

@@ -56,8 +56,8 @@ class WeatherController: UIViewController {
     }
     
     func updateScreen() {
-        DispatchQueue.main.async {
-            self.cityLabel.text = self.modelWeather.hourlyWeather?.city
+        DispatchQueue.main.async {         
+            self.cityLabel.text = self.modelWeather.cityName
             self.temperatureLabel.text = self.modelWeather.hourlyWeather?.tempCurrent
             self.dataCollection.reloadData()
             self.dataTable.reloadData()
@@ -72,7 +72,7 @@ extension WeatherController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TableDataViewCell.identifier, for: indexPath) as? TableDataViewCell else  {
             return UITableViewCell()
         }
-        cell.configureWith(forecast: modelWeather.daysWeather[indexPath.row])
+        cell.configureWith(data: modelWeather.daysWeather[indexPath.row])
         return cell
     }
     
@@ -89,15 +89,15 @@ extension WeatherController: UITableViewDelegate, UITableViewDataSource {
 extension WeatherController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  modelWeather.hourlyWeather?.arrayTemp.count ?? 0
+        return  modelWeather.hourlyWeather?.arrayWeatherHourly.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else  {
             return UICollectionViewCell()
         }
-        cell.configureWith(temp: (modelWeather.hourlyWeather?.arrayTemp[indexPath.row].temp)!,
-                           time: (modelWeather.hourlyWeather?.arrayTemp[indexPath.row].time)!)
+        cell.configureWith(temp: (modelWeather.hourlyWeather?.arrayWeatherHourly[indexPath.row].temp)!,
+                           time: (modelWeather.hourlyWeather?.arrayWeatherHourly[indexPath.row].time)!)
         return cell
     }
 }

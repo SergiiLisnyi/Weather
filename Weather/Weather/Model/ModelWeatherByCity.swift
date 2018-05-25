@@ -9,10 +9,10 @@ import SwiftyJSON
 import Foundation
 
 class ModelWeatherByCity: ModelWeatherProtocol {
-    
+   
     var hourlyWeather: ForecastWeatherHourly?
     var daysWeather = [ForecastWeatherOnDays](repeating: ForecastWeatherOnDays(), count: 5)
-    var cityName: String
+    var cityName: String!
     
     init(city: String) {
         self.cityName = city

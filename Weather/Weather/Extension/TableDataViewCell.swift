@@ -21,10 +21,11 @@ class TableDataViewCell: UITableViewCell {
         // Initialization code
     }
 
-    func configureWith(forecast: ForecastWeatherOnDays) {
-        dayLabel.text = forecast.nameDay
-        tempMaxLabel.text = forecast.maxTempDay
-        tempMinLabel.text = forecast.minTempDay
+    func configureWith(data: ForecastWeatherOnDays) {
+        dayLabel.text = data.nameDay
+        tempMaxLabel.text = data.maxTempDay
+        tempMinLabel.text = data.minTempDay
     }
     
 }
+

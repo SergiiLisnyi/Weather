@@ -29,10 +29,10 @@ class CityViewController: UIViewController {
     
     fileprivate func isValid(nameCity: String) {
         guard let data = self.delegate else { return }
-        data.modelCity.getCityName(name: nameCity, updateScreen: { isValidateName, name in
+        data.modelCities.getCityName(name: nameCity, updateScreen: { isValidateName, name in
             DispatchQueue.main.sync {
                 if isValidateName {
-                    data.modelCity.arrayCities.append(City(name: name))  
+                    data.modelCities.arrayCities.append(City(name: name))  
                     self.dismiss(animated: true)
                 }
                 else {

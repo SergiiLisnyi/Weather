@@ -25,3 +25,4 @@ class CollectionViewCell: UICollectionViewCell {
        timeLabel.text = time
     }
 }
+

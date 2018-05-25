@@ -8,19 +8,16 @@
 import SwiftyJSON
 import Foundation
 
-class ModelCity {
+class ModelCities {
     
-    init()  {
-    }
-    
-    var arrayCities: [TypeInputData] = [] {
+     var arrayCities: [City] = [] {
         didSet {
             updateView?()
         }
     }
    
     var arrayWeather = [ModelWeatherProtocol]()
-    var updateView: (()->Void)?
+    var updateView: (()->())?
     
     func getCityName(name: String, updateScreen: @escaping (Bool, String)->()) {
         let url = ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + name
@@ -30,18 +27,14 @@ class ModelCity {
                                     updateScreen(city != "null", city)
         })
     }
-
-    func getWeatherModel(type: TypeInputData) -> ModelWeatherProtocol {
-        switch type {
-        case .city(let name):
-            return ModelWeatherByCity(city: name)
-        case .location():
-            return ModelWeatherByLocation()
-        }
+    
+    func getWeatherModel(type: City) -> ModelWeatherProtocol {
+        guard let name = type.name else { return ModelWeatherByLocation() }
+        return ModelWeatherByCity(city: name)
     }
     
     func isRepeat(name: String) -> Bool {
-       return arrayCities.contains(TypeInputData.city(name: name))
+        return arrayCities.contains(City(name: name))
     }
 }
 

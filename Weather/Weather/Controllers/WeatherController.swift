@@ -22,13 +22,7 @@ class WeatherController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
-//        if modelWeather.isLoadData() {
-//            hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-//            hud?.mode = .indeterminate
-//        }
-//            
-            
+        startMBProgress()
         setBackground()
         navigationButton.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: #selector(add))
         modelWeather.update {
@@ -36,6 +30,24 @@ class WeatherController: UIViewController {
         }
     }
     
+    @objc func add() {
+        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SelectNameViewController") as? CityViewController else { return }
+        controller.delegate = delegate
+        self.present(controller, animated: true, completion: nil)
+    }
+    
+    func startMBProgress() {
+        if !modelWeather.isLoad() {
+            hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+            hud?.mode = .indeterminate
+        }
+    }
+    
+    func closeMBProgress() {
+        if self.modelWeather.isLoad() {
+            self.hud?.hide(animated: true, afterDelay: 0)
+        }
+    }
     
     func setBackground() {
         let imageView = UIImageView(frame: view.bounds)
@@ -43,18 +55,13 @@ class WeatherController: UIViewController {
         self.view.insertSubview(imageView, at: 0)
     }
     
-    @objc func add() {
-        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SelectNameViewController") as? CityViewController else { return }
-        controller.delegate = delegate
-        self.present(controller, animated: true, completion: nil)
-    }
-
     func updateScreen() {
-        DispatchQueue.main.async { 
-            self.cityLabel.text = self.modelWeather.hourlyWeather.city
-            self.temperatureLabel.text = self.modelWeather.hourlyWeather.tempCurrent
+        DispatchQueue.main.async {
+            self.cityLabel.text = self.modelWeather.hourlyWeather?.city
+            self.temperatureLabel.text = self.modelWeather.hourlyWeather?.tempCurrent
             self.dataCollection.reloadData()
             self.dataTable.reloadData()
+            self.closeMBProgress()
         }
     }
 }
@@ -82,14 +89,15 @@ extension WeatherController: UITableViewDelegate, UITableViewDataSource {
 extension WeatherController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  modelWeather.hourlyWeather.arrayTemp.count
+        return  modelWeather.hourlyWeather?.arrayTemp.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else  {
             return UICollectionViewCell()
         }
-        cell.configureWith(temp: modelWeather.hourlyWeather.arrayTemp[indexPath.row].temp, time: modelWeather.hourlyWeather.arrayTemp[indexPath.row].time)
+        cell.configureWith(temp: (modelWeather.hourlyWeather?.arrayTemp[indexPath.row].temp)!,
+                           time: (modelWeather.hourlyWeather?.arrayTemp[indexPath.row].time)!)
         return cell
     }
 }

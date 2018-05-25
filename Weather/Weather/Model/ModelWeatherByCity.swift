@@ -9,8 +9,8 @@ import SwiftyJSON
 import Foundation
 
 class ModelWeatherByCity: ModelWeatherProtocol {
-   
-    var hourlyWeather = ForecastWeatherHourly()
+    
+    var hourlyWeather: ForecastWeatherHourly?
     var daysWeather = [ForecastWeatherOnDays](repeating: ForecastWeatherOnDays(), count: 5)
     var cityName: String
     
@@ -18,11 +18,16 @@ class ModelWeatherByCity: ModelWeatherProtocol {
         self.cityName = city
     }
 
-    func update(updateScreen: @escaping ()->Void) {
-        getLocationKey(name: cityName, complete: { locationKey in
-            self.getWeatherOnFiveDay(keyCity: locationKey, updateScreen: updateScreen)
-            self.getWeatherOnHourly(city: self.cityName, keyCity: locationKey, updateScreen: updateScreen)
-        })
+    func update(updateScreen: @escaping ()->Void) { 
+        if !isLoad() {
+            getLocationKey(name: cityName, complete: { locationKey in
+                self.getWeatherOnFiveDay(keyCity: locationKey, updateScreen: updateScreen)
+                self.getWeatherOnHourly(city: self.cityName, keyCity: locationKey, updateScreen: updateScreen)
+            })
+        }
+        else {
+            updateScreen()
+        }
     }
 
     func getLocationKey(name: String, complete: @escaping (String)->Void) {

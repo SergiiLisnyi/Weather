@@ -10,7 +10,7 @@ import Foundation
 
 protocol ModelWeatherProtocol : class {
     
-    var hourlyWeather: ForecastWeatherHourly { get set }
+    var hourlyWeather: ForecastWeatherHourly? { get set }
     var daysWeather: [ForecastWeatherOnDays] { get set }
     
     func update(updateScreen: @escaping ()->Void)
@@ -21,14 +21,11 @@ extension ModelWeatherProtocol  {
     var days: Int {
        return 5
     }
-    
-//    func isLoadData() -> Bool {
-//        if hourlyWeather.city == nil {
-//            return false
-//        }
-//        return true
-//    }
 
+    func isLoad() -> Bool {
+        return hourlyWeather != nil
+    }
+    
     func getWeatherOnFiveDay(keyCity: String, updateScreen: @escaping ()->())  {
         let url = ApiData.BASE_URL + "daily/5day/" + keyCity + "?apikey=" + ApiData.APIKEY + "&metric=true"
         Request.request(url: url, complete: { data in

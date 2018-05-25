@@ -17,7 +17,7 @@ class ParserJSON {
     static func getDayOfWeek(_ today:String) -> String {
         let formatter  = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        guard let todayDate = formatter.date(from: today) else { return "no day" }
+        guard let todayDate = formatter.date(from: today) else { return "" }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE"
         return dateFormatter.string(from: todayDate).capitalized

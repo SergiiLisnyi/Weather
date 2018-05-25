@@ -11,7 +11,7 @@ import CoreLocation
 
 class PageViewController: UIPageViewController {
     
-    var modelCity = ModelCity()
+    var modelCity = ModelCities()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,18 +27,11 @@ class PageViewController: UIPageViewController {
     func displayController(index: Int) -> WeatherController? {
         guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { return nil }
         controller.delegate = self
-        if  modelCity.arrayWeather.indices.contains(index) {
-            controller.modelWeather = modelCity.arrayWeather[index]
-        }
-        else {
-            let modelWeather = modelCity.getWeatherModel(type: modelCity.arrayCities[index])
-            controller.modelWeather = modelWeather
-            modelCity.arrayWeather.append(modelWeather)
-        }
+        controller.modelWeather = modelCity.arrayWeather[index]
         return controller
     }
 
-    func update() {
+    func updateArrayCities() {
         let city = self.modelCity.arrayCities.last
         let modelWeather = modelCity.getWeatherModel(type: city!)
         modelCity.arrayWeather.append(modelWeather)
@@ -47,24 +40,18 @@ class PageViewController: UIPageViewController {
     }
     
     fileprivate func loadDataWeather() {
-        modelCity.updateView = update
-        isEnableLocation() ? modelCity.arrayCities.append(TypeInputData.location()) :
-                            modelCity.arrayCities.append(TypeInputData.city(name: "London"))
+        modelCity.updateView = updateArrayCities
+        isEnableLocation() ? modelCity.arrayCities.append(City(name: nil)) :
+                            modelCity.arrayCities.append(City(name: "London"))
+
         guard let controller = displayController(index: 0) else { return }
         setViewControllers([controller], direction: .forward, animated: true, completion: nil)
     }
     
     func getIndex(by city: ModelWeatherProtocol) -> Int? {
         for i in 0..<modelCity.arrayCities.count {
-            switch modelCity.arrayCities[i] {
-            case .city(let name):
-                if name == city.hourlyWeather.city {
-                    return i
-                }
-            case .location():
-                if city as? ModelWeatherByLocation != nil {
-                    return i
-                }
+            if modelCity.arrayCities[i].name == city.hourlyWeather?.city {
+                return i
             }
         }
         return nil

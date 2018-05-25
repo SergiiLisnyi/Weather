@@ -14,13 +14,13 @@ import CoreLocation
 
 
 class ModelWeatherByLocation: NSObject, ModelWeatherProtocol  {
-
+   
+    var hourlyWeather: ForecastWeatherHourly?
     let locationManager = CLLocationManager()
-    var hourlyWeather = ForecastWeatherHourly()
     var daysWeather = [ForecastWeatherOnDays](repeating: ForecastWeatherOnDays(), count: 5)
     var latitude = ""
     var longitude = ""
-    var cityName = ""
+    var cityName: String!
     var delegate: (()->Void)?
     
     override init() {
@@ -44,7 +44,6 @@ class ModelWeatherByLocation: NSObject, ModelWeatherProtocol  {
     
     func getLocationKey(latitude: String, longitude: String, complete: @escaping (String)->Void) {
         let url = ApiData.BASE_URL_LOCATION + ApiData.APIKEY + "&q=" + latitude + "%2C%20" + longitude
-        
         Request.request(url: url, complete: { data in
             let locationKey = data["Key"].description
             self.cityName = data["ParentCity"]["EnglishName"].description
@@ -58,7 +57,7 @@ extension ModelWeatherByLocation: CLLocationManagerDelegate {
         guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
         let latitude = String(locValue.latitude)
         let longitude = String(locValue.longitude)
-
+        
         getLocationKey(latitude: latitude, longitude: longitude, complete: { locationKey in
                         self.getWeatherOnFiveDay(keyCity: locationKey, updateScreen: self.delegate!)
                         self.getWeatherOnHourly(city: self.cityName, keyCity: locationKey, updateScreen: self.delegate!)

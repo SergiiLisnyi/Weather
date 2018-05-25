@@ -7,52 +7,56 @@
 //  Copyright © 2018 Sergii Lisnyi. All rights reserved.
 //
 import UIKit
+import CoreLocation
 
 class PageViewController: UIPageViewController {
     
-    var modelCity = CityModel()
-    var controllers = [WeatherController]()
-    var arrayWeather = [ModelWeatherProtocol]()
+    var modelCity = ModelCity()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        loadDataWeather()
+        dataSource = self
+    }
+    
+    func isEnableLocation() -> Bool {
+        guard CLLocationManager.locationServicesEnabled() else { return false }
+        return [.authorizedAlways, .authorizedWhenInUse].contains(CLLocationManager.authorizationStatus())
+    }
     
     func displayController(index: Int) -> WeatherController? {
         guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { return nil }
-        if arrayWeather.indices.contains(index) {
-            controller.modelWeather = arrayWeather[index]
-            controller.delegate = self
+        controller.delegate = self
+        if  modelCity.arrayWeather.indices.contains(index) {
+            controller.modelWeather = modelCity.arrayWeather[index]
         }
         else {
-            let modelWeather = modelCity.getModel(type: modelCity.arrayCity[index])
+            let modelWeather = modelCity.getWeatherModel(type: modelCity.arrayCities[index])
             controller.modelWeather = modelWeather
-            controller.delegate = self
-            arrayWeather.append(modelWeather)
+            modelCity.arrayWeather.append(modelWeather)
         }
         return controller
     }
 
     func update() {
-        let city = self.modelCity.arrayCity.last
-        let modelWeather = modelCity.getModel(type: city!)
-        arrayWeather.append(modelWeather)
-        guard let controller = displayController(index: arrayWeather.count - 1) else { return }
+        let city = self.modelCity.arrayCities.last
+        let modelWeather = modelCity.getWeatherModel(type: city!)
+        modelCity.arrayWeather.append(modelWeather)
+        guard let controller = displayController(index: modelCity.arrayWeather.count - 1) else { return }
         setViewControllers([controller], direction: .forward, animated: true, completion: nil)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    fileprivate func loadDataWeather() {
         modelCity.updateView = update
-        modelCity.arrayCity.append(TypeInputData.location())
-        loadData()
-        dataSource = self
-    }
-    
-    fileprivate func loadData() {
+        isEnableLocation() ? modelCity.arrayCities.append(TypeInputData.location()) :
+                            modelCity.arrayCities.append(TypeInputData.city(name: "London"))
         guard let controller = displayController(index: 0) else { return }
         setViewControllers([controller], direction: .forward, animated: true, completion: nil)
     }
     
-    func getIndex(_ city: ModelWeatherProtocol) -> Int? {
-        for i in 0..<modelCity.arrayCity.count {
-            switch modelCity.arrayCity[i] {
+    func getIndex(by city: ModelWeatherProtocol) -> Int? {
+        for i in 0..<modelCity.arrayCities.count {
+            switch modelCity.arrayCities[i] {
             case .city(let name):
                 if name == city.hourlyWeather.city {
                     return i
@@ -70,7 +74,7 @@ class PageViewController: UIPageViewController {
 extension PageViewController: UIPageViewControllerDelegate, UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let controller = viewController as? WeatherController,
-            let viewControllerIndex = getIndex(controller.modelWeather)
+            let viewControllerIndex = getIndex(by: controller.modelWeather)
             else { return nil }
         if viewControllerIndex - 1 < 0  {
             return nil
@@ -80,9 +84,9 @@ extension PageViewController: UIPageViewControllerDelegate, UIPageViewController
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         guard let controller = viewController as? WeatherController,
-            let viewControllerIndex = getIndex(controller.modelWeather)
+            let viewControllerIndex = getIndex(by: controller.modelWeather)
             else { return nil }
-        if viewControllerIndex + 1 >= modelCity.arrayCity.count {
+        if viewControllerIndex + 1 >= modelCity.arrayCities.count {
             return nil
         }
         return displayController(index: viewControllerIndex + 1)

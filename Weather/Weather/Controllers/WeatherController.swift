@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class WeatherController: UIViewController {
 
@@ -17,9 +18,17 @@ class WeatherController: UIViewController {
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var navigationButton: UINavigationItem!
+    var hud: MBProgressHUD?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       
+//        if modelWeather.isLoadData() {
+//            hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+//            hud?.mode = .indeterminate
+//        }
+//            
+            
         setBackground()
         navigationButton.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: #selector(add))
         modelWeather.update {

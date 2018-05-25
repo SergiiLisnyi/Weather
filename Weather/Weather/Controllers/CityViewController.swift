@@ -32,7 +32,7 @@ class CityViewController: UIViewController {
         data.modelCity.getCityName(name: nameCity, updateScreen: { isValidateName, name in
             DispatchQueue.main.sync {
                 if isValidateName {
-                    data.modelCity.arrayCity.append(TypeInputData.city(name: name))
+                    data.modelCity.arrayCities.append(TypeInputData.city(name: name))
                     self.dismiss(animated: true)
                 }
                 else {

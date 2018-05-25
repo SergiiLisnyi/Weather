@@ -9,11 +9,18 @@
 import Foundation
 
 enum TypeInputData {
-   // case location(latitude: String, longitude: String)
     case city(name: String)
     case location()
-    
 }
 
-
+extension TypeInputData: Equatable {
+    static func == (lhs: TypeInputData, rhs: TypeInputData) -> Bool {
+        switch (lhs, rhs) {
+        case (city(let lName), city(let rName)):
+            return lName == rName
+        default:
+            return false
+        }
+    }
+}
 

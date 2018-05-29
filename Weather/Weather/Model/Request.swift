@@ -7,6 +7,7 @@
 //
 import SwiftyJSON
 import Foundation
+import Alamofire
 
 class Request {
     
@@ -19,7 +20,21 @@ class Request {
         }
         task.resume()
     }
+    
+    static func requestWithAlamofire (url: String, complete: @escaping (JSON)->Void) {
+        guard let url = URL(string: url) else { return }
+        Alamofire.request(url).responseData { response in
+            guard response.result.isSuccess else {
+                print("Error \(String(describing: response.result.error))")
+                return
+            }
+            guard let content = response.data else { return }
+            complete(JSON(content))
+        }
+    }
 }
+
+
 
 
 

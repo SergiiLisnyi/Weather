@@ -30,7 +30,7 @@ extension ModelWeatherProtocol  {
     
     func getWeatherOnFiveDay(keyCity: String, updateScreen: @escaping ()->())  {
         let url = ApiData.BASE_URL + "daily/5day/" + keyCity + "?apikey=" + ApiData.APIKEY + "&metric=true"
-        Request.request(url: url, complete: { data in
+        Request.requestWithAlamofire(url: url, complete: { data in
             for i in 0..<self.days {
                 let date = data["DailyForecasts"][i]["Date"].description
                 let onlyDay = date[0 ..< 10]
@@ -44,7 +44,7 @@ extension ModelWeatherProtocol  {
     
     func getWeatherOnHourly(city: String, keyCity: String, updateScreen: @escaping ()->())  {
         let url = ApiData.BASE_URL + "hourly/12hour/" + keyCity + "?apikey=" + ApiData.APIKEY + "&metric=true"
-        Request.request(url: url, complete: { data in
+        Request.requestWithAlamofire(url: url, complete: { data in
             self.hourlyWeather = ForecastWeatherHourly(city: city,
                                                        tempCurrent: data[0]["Temperature"]["Value"].description + "°",
                                                        arrayWeatherHourly: ParserJSON.getTempHourly(json: data))

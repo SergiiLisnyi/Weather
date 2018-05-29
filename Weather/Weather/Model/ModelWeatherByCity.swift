@@ -32,7 +32,7 @@ class ModelWeatherByCity: ModelWeatherProtocol {
 
     func getLocationKey(name: String, complete: @escaping (String)->Void) {
         let url = ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + name
-        Request.request(url: url, complete: { data in
+        Request.requestWithAlamofire(url: url, complete: { data in
             let locationKey = data[0]["Key"].description
             self.cityName = data[0]["EnglishName"].description
             complete(locationKey)

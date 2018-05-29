@@ -21,7 +21,7 @@ class ModelCities {
     
     func getCityName(name: String, updateScreen: @escaping (Bool, String)->()) {
         let url = ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + name
-        Request.request(url: url, complete: { data in
+        Request.requestWithAlamofire(url: url, complete: { data in
         let city = data[0]["EnglishName"].description
         self.isRepeat(name: city) ? updateScreen(false, "") :
                                     updateScreen(city != "null", city)

@@ -44,7 +44,7 @@ class ModelWeatherByLocation: NSObject, ModelWeatherProtocol  {
     
     func getLocationKey(latitude: String, longitude: String, complete: @escaping (String)->Void) {
         let url = ApiData.BASE_URL_LOCATION + ApiData.APIKEY + "&q=" + latitude + "%2C%20" + longitude
-        Request.request(url: url, complete: { data in
+        Request.requestWithAlamofire(url: url, complete: { data in
             let locationKey = data["Key"].description
             self.cityName = data["ParentCity"]["EnglishName"].description
             complete(locationKey)

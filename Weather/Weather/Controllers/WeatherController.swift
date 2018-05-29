@@ -13,12 +13,13 @@ class WeatherController: UIViewController {
 
     var modelWeather: ModelWeatherProtocol!
     var delegate: PageViewController?
+    var hud: MBProgressHUD?
     @IBOutlet weak var dataCollection: UICollectionView!
     @IBOutlet weak var dataTable: UITableView!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var navigationButton: UINavigationItem!
-    var hud: MBProgressHUD?
+    
     
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
@@ -32,6 +33,7 @@ class WeatherController: UIViewController {
         startMBProgress()
         setBackground()
         navigationButton.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: #selector(add))
+        navigationButton.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: nil, action: #selector(search))
         modelWeather.update {
             self.updateScreen()
         }
@@ -43,6 +45,14 @@ class WeatherController: UIViewController {
         controller.delegate = delegate
         self.present(controller, animated: true, completion: nil)
     }
+    
+    @objc func search() {
+        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MapViewController") as? MapViewController else { return }
+        controller.delegate = delegate
+        self.present(controller, animated: true, completion: nil)
+    }
+    
+    
     
     @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
         updateScreen()

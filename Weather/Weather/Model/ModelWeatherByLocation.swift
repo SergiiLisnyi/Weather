@@ -18,8 +18,6 @@ class ModelWeatherByLocation: NSObject, ModelWeatherProtocol  {
     var hourlyWeather: ForecastWeatherHourly?
     let locationManager = CLLocationManager()
     var daysWeather = [ForecastWeatherOnDays](repeating: ForecastWeatherOnDays(), count: 5)
-    var latitude = ""
-    var longitude = ""
     var cityName: String!
     var delegate: (()->Void)?
     
@@ -43,6 +41,9 @@ class ModelWeatherByLocation: NSObject, ModelWeatherProtocol  {
     }
     
     func getLocationKey(latitude: String, longitude: String, complete: @escaping (String)->Void) {
+        
+        print(latitude + " in model " + longitude)
+        
         let url = ApiData.BASE_URL_LOCATION + ApiData.APIKEY + "&q=" + latitude + "%2C%20" + longitude
         Request.requestWithAlamofire(url: url, complete: { data in
             let locationKey = data["Key"].description

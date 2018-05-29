@@ -28,6 +28,14 @@ class ModelCities {
         })
     }
     
+    func getCityNameByLocation(latitude: String, longitude: String, complete: @escaping (String)->()) {  
+        let url = ApiData.BASE_URL_LOCATION + ApiData.APIKEY + "&q=" + latitude + "%2C" + longitude
+        Request.requestWithAlamofire(url: url, complete: { data in
+            let cityName = data["ParentCity"]["EnglishName"].string
+            cityName != nil ? complete(cityName!) : complete(data["EnglishName"].description)
+        })
+    }
+  
     func getWeatherModel(type: City) -> ModelWeatherProtocol {
         guard let name = type.name else { return ModelWeatherByLocation() }
         return ModelWeatherByCity(city: name)

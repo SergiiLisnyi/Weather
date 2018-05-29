@@ -20,6 +20,13 @@ class WeatherController: UIViewController {
     @IBOutlet weak var navigationButton: UINavigationItem!
     var hud: MBProgressHUD?
     
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(WeatherController.handleRefresh(_:)), for: UIControlEvents.valueChanged)
+        refreshControl.tintColor = .black
+        return refreshControl
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         startMBProgress()
@@ -28,12 +35,18 @@ class WeatherController: UIViewController {
         modelWeather.update {
             self.updateScreen()
         }
+        self.dataTable.addSubview(self.refreshControl)
     }
     
     @objc func add() {
         guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SelectNameViewController") as? CityViewController else { return }
         controller.delegate = delegate
         self.present(controller, animated: true, completion: nil)
+    }
+    
+    @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
+        updateScreen()
+        refreshControl.endRefreshing()
     }
     
     func startMBProgress() {

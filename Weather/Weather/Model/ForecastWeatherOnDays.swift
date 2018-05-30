@@ -9,7 +9,7 @@
 import Foundation
 
 struct ForecastWeatherOnDays {
-    var nameDay: String?
-    var minTempDay: String?
-    var maxTempDay: String?
+    var nameDay: String
+    var minTempDay: String
+    var maxTempDay: String
 }

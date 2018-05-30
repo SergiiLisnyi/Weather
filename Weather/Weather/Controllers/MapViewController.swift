@@ -29,7 +29,7 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
         super.viewDidLoad()
         mapView.delegate = self
         navigationItems.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(done))
-        navigationItems.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: #selector(cansel)),
+        navigationItems.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: #selector(cancel)),
                                           UIBarButtonItem(barButtonSystemItem: .search, target: nil, action: #selector(search))]
         }
 
@@ -41,10 +41,10 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
     }
     
     @objc func done() {
-        (latitude != nil || longitude != nil) ? addToArrayCities(latitude: latitude, longitude: longitude) : cansel()
+        (latitude != nil || longitude != nil) ? addToArrayCities(latitude: latitude, longitude: longitude) : cancel()
     }
     
-    @objc func cansel() {
+    @objc func cancel() {
         self.dismiss(animated: true)
     }
     
@@ -52,7 +52,7 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
         guard let data = self.delegate else { return }
         data.modelCities.getCityNameByLocation(latitude: latitude, longitude: longitude, complete: { name in
             DispatchQueue.main.async {
-                data.modelCities.arrayCities.append(City(name: name))
+                data.modelCities.arrayCities.append(name)
                 self.dismiss(animated: true)
             }
         })
@@ -79,19 +79,26 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar){
+        
         searchBar.resignFirstResponder()
         dismiss(animated: true, completion: nil)
         removeAnnotation()
+        
+        
         localSearchRequest = MKLocalSearchRequest()
         localSearchRequest.naturalLanguageQuery = searchBar.text
         localSearch = MKLocalSearch(request: localSearchRequest)
         localSearch.start { (localSearchResponse, error) -> Void in
+            
+            
             if localSearchResponse == nil{
                 let alertController = UIAlertController(title: nil, message: "Place Not Found", preferredStyle: UIAlertControllerStyle.alert)
                 alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
                 self.present(alertController, animated: true, completion: nil)
                 return
             }
+            
+            
             self.pointAnnotation = MKPointAnnotation()
             self.pointAnnotation.title = searchBar.text
             self.pointAnnotation.coordinate = CLLocationCoordinate2D(latitude: localSearchResponse!.boundingRegion.center.latitude,

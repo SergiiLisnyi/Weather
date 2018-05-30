@@ -15,11 +15,12 @@ import CoreLocation
 
 class ModelWeatherByLocation: NSObject, ModelWeatherProtocol  {
    
-    var hourlyWeather: ForecastWeatherHourly?
+    var nowWeather: ForecastWeatherNow?
+    var hourlyWeather = [ForecastWeatherHourly](repeating: ForecastWeatherHourly(time: "", temp: ""), count: 12)
     let locationManager = CLLocationManager()
-    var daysWeather = [ForecastWeatherOnDays](repeating: ForecastWeatherOnDays(), count: 5)
+    var daysWeather = [ForecastWeatherOnDays](repeating: ForecastWeatherOnDays(nameDay: "", minTempDay: "", maxTempDay: ""), count: 5)
     var cityName: String!
-    var delegate: (()->Void)?
+    var callBack: (()->Void)?
     
     override init() {
         super.init()
@@ -27,7 +28,7 @@ class ModelWeatherByLocation: NSObject, ModelWeatherProtocol  {
     }
     
     func update(updateScreen: @escaping ()->Void) {
-        delegate = updateScreen
+        callBack = updateScreen
     }
     
     fileprivate func updateLocation() {
@@ -42,10 +43,9 @@ class ModelWeatherByLocation: NSObject, ModelWeatherProtocol  {
     
     func getLocationKey(latitude: String, longitude: String, complete: @escaping (String)->Void) {
         
-        print(latitude + " in model " + longitude)
-        
         let url = ApiData.BASE_URL_LOCATION + ApiData.APIKEY + "&q=" + latitude + "%2C%20" + longitude
         Request.requestWithAlamofire(url: url, complete: { data in
+            if data.isEmpty { return }
             let locationKey = data["Key"].description
             self.cityName = data["ParentCity"]["EnglishName"].description
             complete(locationKey)
@@ -60,8 +60,8 @@ extension ModelWeatherByLocation: CLLocationManagerDelegate {
         let longitude = String(locValue.longitude)
         
         getLocationKey(latitude: latitude, longitude: longitude, complete: { locationKey in
-                        self.getWeatherOnFiveDay(keyCity: locationKey, updateScreen: self.delegate!)
-                        self.getWeatherOnHourly(city: self.cityName, keyCity: locationKey, updateScreen: self.delegate!)
+                        self.getWeatherOnFiveDay(keyCity: locationKey, updateScreen: self.callBack!)
+                        self.getWeatherOnHourly(city: self.cityName, keyCity: locationKey, updateScreen: self.callBack!)
         })
     }
 }

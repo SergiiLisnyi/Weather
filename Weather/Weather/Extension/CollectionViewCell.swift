@@ -10,8 +10,6 @@ import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
     
-    static let identifier = "cell"
-    
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var tempLabel: UILabel!
     
@@ -19,10 +17,15 @@ class CollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-    
-    func configureWith(temp: String, time: String) {
-       tempLabel.text = temp
-       timeLabel.text = time
+
+    func configureWith(data: ForecastWeatherHourly) {
+        tempLabel.text = data.temp
+        timeLabel.text = data.time
     }
 }
 
+extension CollectionViewCell {
+    class var reuseIdentifier: String {
+        return NSStringFromClass(self).components(separatedBy: ".").last!
+    }
+}

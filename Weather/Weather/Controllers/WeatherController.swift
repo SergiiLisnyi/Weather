@@ -18,9 +18,7 @@ class WeatherController: UIViewController {
     @IBOutlet weak var dataTable: UITableView!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
-    @IBOutlet weak var navigationButton: UINavigationItem!
-    
-    
+
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(WeatherController.handleRefresh(_:)), for: UIControlEvents.valueChanged)
@@ -32,27 +30,11 @@ class WeatherController: UIViewController {
         super.viewDidLoad()
         startMBProgress()
         setBackground()
-        navigationButton.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: #selector(add))
-        navigationButton.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: nil, action: #selector(search))
         modelWeather.update {
             self.updateScreen()
         }
         self.dataTable.addSubview(self.refreshControl)
     }
-    
-    @objc func add() {
-        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SelectNameViewController") as? CityViewController else { return }
-        controller.delegate = delegate
-        self.present(controller, animated: true, completion: nil)
-    }
-    
-    @objc func search() {
-        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MapViewController") as? MapViewController else { return }
-        controller.delegate = delegate
-        self.present(controller, animated: true, completion: nil)
-    }
-    
-    
     
     @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
         updateScreen()
@@ -81,7 +63,7 @@ class WeatherController: UIViewController {
     func updateScreen() {
         DispatchQueue.main.async {         
             self.cityLabel.text = self.modelWeather.cityName
-            self.temperatureLabel.text = self.modelWeather.hourlyWeather?.tempCurrent
+            self.temperatureLabel.text = self.modelWeather.nowWeather?.tempCurrent
             self.dataCollection.reloadData()
             self.dataTable.reloadData()
             self.closeMBProgress()
@@ -92,7 +74,7 @@ class WeatherController: UIViewController {
 extension WeatherController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TableDataViewCell.identifier, for: indexPath) as? TableDataViewCell else  {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TableDataViewCell.reuseIdentifier, for: indexPath) as? TableDataViewCell else  {
             return UITableViewCell()
         }
         cell.configureWith(data: modelWeather.daysWeather[indexPath.row])
@@ -102,25 +84,18 @@ extension WeatherController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return modelWeather.daysWeather.count
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
 }
 
 
 extension WeatherController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  modelWeather.hourlyWeather?.arrayWeatherHourly.count ?? 0
+        return modelWeather.hourlyWeather.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as? CollectionViewCell else  {
-            return UICollectionViewCell()
-        }
-        cell.configureWith(temp: (modelWeather.hourlyWeather?.arrayWeatherHourly[indexPath.row].temp)!,
-                           time: (modelWeather.hourlyWeather?.arrayWeatherHourly[indexPath.row].time)!)
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseIdentifier, for: indexPath) as? CollectionViewCell else  { return UICollectionViewCell() }
+        cell.configureWith(data: modelWeather.hourlyWeather[indexPath.row])
         return cell
     }
 }

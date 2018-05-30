@@ -9,9 +9,10 @@ import SwiftyJSON
 import Foundation
 
 class ModelWeatherByCity: ModelWeatherProtocol {
-   
-    var hourlyWeather: ForecastWeatherHourly?
-    var daysWeather = [ForecastWeatherOnDays](repeating: ForecastWeatherOnDays(), count: 5)
+     
+    var nowWeather: ForecastWeatherNow?
+    var hourlyWeather = [ForecastWeatherHourly](repeating: ForecastWeatherHourly(time: "", temp: ""), count: 12)
+    var daysWeather = [ForecastWeatherOnDays](repeating: ForecastWeatherOnDays(nameDay: "", minTempDay: "", maxTempDay: ""), count: 5)
     var cityName: String!
     
     init(city: String) {
@@ -33,6 +34,7 @@ class ModelWeatherByCity: ModelWeatherProtocol {
     func getLocationKey(name: String, complete: @escaping (String)->Void) {
         let url = ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + name
         Request.requestWithAlamofire(url: url, complete: { data in
+            if data.isEmpty { return }
             let locationKey = data[0]["Key"].description
             self.cityName = data[0]["EnglishName"].description
             complete(locationKey)

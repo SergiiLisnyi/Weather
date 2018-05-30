@@ -10,9 +10,10 @@ import Foundation
 
 protocol ModelWeatherProtocol : class {
     
-    var hourlyWeather: ForecastWeatherHourly? { get set }
+    // FIXNAME
+    var nowWeather: ForecastWeatherNow? { get set }
+    var hourlyWeather: [ForecastWeatherHourly] { get set }
     var daysWeather: [ForecastWeatherOnDays] { get set }
-    
     var cityName: String! { get set }
     
     func update(updateScreen: @escaping ()->Void)
@@ -24,8 +25,16 @@ extension ModelWeatherProtocol  {
        return 5
     }
 
+    var hourly: Int {
+        return 12
+    }
+    
+    var midNight: Int {
+        return 24
+    }
+    
     func isLoad() -> Bool {
-        return hourlyWeather != nil
+        return nowWeather != nil
     }
     
     func getWeatherOnFiveDay(keyCity: String, updateScreen: @escaping ()->())  {
@@ -45,9 +54,17 @@ extension ModelWeatherProtocol  {
     func getWeatherOnHourly(city: String, keyCity: String, updateScreen: @escaping ()->())  {
         let url = ApiData.BASE_URL + "hourly/12hour/" + keyCity + "?apikey=" + ApiData.APIKEY + "&metric=true"
         Request.requestWithAlamofire(url: url, complete: { data in
-            self.hourlyWeather = ForecastWeatherHourly(city: city,
-                                                       tempCurrent: data[0]["Temperature"]["Value"].description + "°",
-                                                       arrayWeatherHourly: ParserJSON.getTempHourly(json: data))
+            
+            self.nowWeather = ForecastWeatherNow(city: city,
+                                                       tempCurrent: data[0]["Temperature"]["Value"].description + "°")
+            let time = data[0]["DateTime"].description
+            var hour = Int(time[11 ..< 13]) ?? 0
+            for i in 0..<self.hourly {
+                hour = hour + 1
+                if hour == self.midNight { hour = 0 }
+                self.hourlyWeather[i].temp = data[i]["Temperature"]["Value"].description
+                self.hourlyWeather[i].time = String(hour)
+            }
             updateScreen()
         })
     }   

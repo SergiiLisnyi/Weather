@@ -10,8 +10,6 @@ import UIKit
 
 class TableDataViewCell: UITableViewCell {
     
-    static let identifier = "customCell"
-
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var tempMaxLabel: UILabel!
     @IBOutlet weak var tempMinLabel: UILabel!
@@ -26,6 +24,16 @@ class TableDataViewCell: UITableViewCell {
         tempMaxLabel.text = data.maxTempDay
         tempMinLabel.text = data.minTempDay
     }
-    
 }
+
+extension TableDataViewCell {
+    class var reuseIdentifier: String {
+        return NSStringFromClass(self).components(separatedBy: ".").last!
+    }
+}
+
+
+
+
+
 

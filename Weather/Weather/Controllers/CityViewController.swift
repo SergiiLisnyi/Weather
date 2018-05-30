@@ -11,7 +11,7 @@ import UIKit
 class CityViewController: UIViewController {
  
     @IBOutlet weak var enterLabel: UILabel!
-    @IBOutlet weak var nameLabel: UITextField!
+    @IBOutlet weak var cityNameTextField: UITextField!
     var delegate: PageViewController?
     
     override func viewDidLoad() {
@@ -19,11 +19,11 @@ class CityViewController: UIViewController {
     }
     
     @IBAction func selectButtonTapped(_ sender: UIButton) {
-        let nameCity = nameLabel.text!
+        let nameCity = cityNameTextField.text!
         isValid(nameCity: nameCity)
     }
     
-    @IBAction func canselButtonTapped(_ sender: UIButton) {
+    @IBAction func cancelButtonTapped(_ sender: UIButton) {
         self.dismiss(animated: true)
     }
     
@@ -32,7 +32,7 @@ class CityViewController: UIViewController {
         data.modelCities.getCityName(name: nameCity, updateScreen: { isValidateName, name in
             DispatchQueue.main.async {
                 if isValidateName {
-                    data.modelCities.arrayCities.append(City(name: name))  
+                    data.modelCities.arrayCities.append(name) 
                     self.dismiss(animated: true)
                 }
                 else {
@@ -42,21 +42,4 @@ class CityViewController: UIViewController {
             }
         })
     }
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }

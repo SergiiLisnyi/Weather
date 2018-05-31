@@ -70,15 +70,36 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
         }
     }
     
+    private func removeAnnotation() {
+        if self.mapView.annotations.count != 0 {
+            annotation = self.mapView.annotations[0]
+            self.mapView.removeAnnotation(annotation)
+        }
+    }
+    
+    private func showAlertAndReturn() {
+        self.showAlert(title: "Dismiss", message: "Place Not Found")
+        return
+    }
+}
+
+extension MapViewController {
+   
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         dismiss(animated: true, completion: nil)
         removeAnnotation()
-        
+    
         localSearchRequest = MKLocalSearchRequest()
         localSearchRequest.naturalLanguageQuery = searchBar.text
         localSearch = MKLocalSearch(request: localSearchRequest)
-        
+
         localSearch.start { (localSearchResponse, error) -> Void in
             if localSearchResponse == nil {
                 self.showAlertAndReturn()
@@ -93,27 +114,6 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
             self.mapView.centerCoordinate = self.pointAnnotation.coordinate
             self.mapView.addAnnotation(self.pinAnnotationView.annotation!)
         }
-    }
-    
-    private func removeAnnotation() {
-        if self.mapView.annotations.count != 0 {
-            annotation = self.mapView.annotations[0]
-            self.mapView.removeAnnotation(annotation)
-        }
-    }
-    
-    private func showAlertAndReturn() {
-        self.showAlert(title: "Dismiss", message: "Place Not Found")
-        return
-    }
-    
-}
-
-extension UIViewController {
-    func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        self.present(alert, animated: true, completion: nil)
     }
 }
 

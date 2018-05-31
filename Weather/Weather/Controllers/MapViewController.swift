@@ -11,9 +11,7 @@ import MapKit
 
 class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegate {
 
-    @IBOutlet weak var navigationItems: UINavigationItem!
     @IBOutlet weak var mapView: MKMapView!
-    
     var searchController:UISearchController!
     var annotation:MKAnnotation!
     var localSearchRequest:MKLocalSearchRequest!
@@ -24,36 +22,37 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
     private var longitude: String!
     var delegate: PageViewController?
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
-        navigationItems.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(done))
-        navigationItems.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: #selector(cancel)),
-                                          UIBarButtonItem(barButtonSystemItem: .search, target: nil, action: #selector(search))]
-        }
-
-    @objc func search() {
+    }
+    
+    @IBAction func addItemTapped(_ sender: UIBarButtonItem) {
+        (latitude != nil || longitude != nil) ? addToCities(latitude: latitude, longitude: longitude) : self.dismiss(animated: true)
+    }
+    
+    @IBAction func searchItemTapped(_ sender: UIBarButtonItem) {
         searchController = UISearchController(searchResultsController: nil)
         searchController.hidesNavigationBarDuringPresentation = false
         self.searchController.searchBar.delegate = self
         present(searchController, animated: true, completion: nil)
     }
     
-    @objc func done() {
-        (latitude != nil || longitude != nil) ? addToArrayCities(latitude: latitude, longitude: longitude) : cancel()
-    }
-    
-    @objc func cancel() {
+    @IBAction func cancelItemTapped(_ sender: UIBarButtonItem) {
         self.dismiss(animated: true)
     }
     
-    private func addToArrayCities (latitude: String, longitude: String) {
+    private func addToCities (latitude: String, longitude: String) {
         guard let data = self.delegate else { return }
-        data.modelCities.getCityNameByLocation(latitude: latitude, longitude: longitude, complete: { name in
+        data.modelCities.getCityNameByLocation(latitude: latitude, longitude: longitude, complete: { isValidName, name in
             DispatchQueue.main.async {
-                data.modelCities.arrayCities.append(name)
-                self.dismiss(animated: true)
+                if isValidName {
+                    data.modelCities.cities.append(name)
+                    self.dismiss(animated: true)
+                }
+                else {
+                    self.showAlert(title: "Error", message: "\(name) is already in the list")
+                }
             }
         })
     }
@@ -71,34 +70,19 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
         }
     }
     
-    private func removeAnnotation() {
-        if self.mapView.annotations.count != 0 {
-            annotation = self.mapView.annotations[0]
-            self.mapView.removeAnnotation(annotation)
-        }
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar){
-        
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         dismiss(animated: true, completion: nil)
         removeAnnotation()
         
-        
         localSearchRequest = MKLocalSearchRequest()
         localSearchRequest.naturalLanguageQuery = searchBar.text
         localSearch = MKLocalSearch(request: localSearchRequest)
+        
         localSearch.start { (localSearchResponse, error) -> Void in
-            
-            
-            if localSearchResponse == nil{
-                let alertController = UIAlertController(title: nil, message: "Place Not Found", preferredStyle: UIAlertControllerStyle.alert)
-                alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
-                self.present(alertController, animated: true, completion: nil)
-                return
+            if localSearchResponse == nil {
+                self.showAlertAndReturn()
             }
-            
-            
             self.pointAnnotation = MKPointAnnotation()
             self.pointAnnotation.title = searchBar.text
             self.pointAnnotation.coordinate = CLLocationCoordinate2D(latitude: localSearchResponse!.boundingRegion.center.latitude,
@@ -110,4 +94,31 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
             self.mapView.addAnnotation(self.pinAnnotationView.annotation!)
         }
     }
+    
+    private func removeAnnotation() {
+        if self.mapView.annotations.count != 0 {
+            annotation = self.mapView.annotations[0]
+            self.mapView.removeAnnotation(annotation)
+        }
+    }
+    
+    private func showAlertAndReturn() {
+        self.showAlert(title: "Dismiss", message: "Place Not Found")
+        return
+    }
+    
 }
+
+extension UIViewController {
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+
+
+
+
+
+

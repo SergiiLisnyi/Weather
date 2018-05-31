@@ -8,7 +8,6 @@
 
 import Foundation
 
-struct ForecastWeatherNow {
-    var city: String
+struct ForecastWeatherDay {
     var tempCurrent: String
 }

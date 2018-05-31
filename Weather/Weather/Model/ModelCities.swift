@@ -10,13 +10,13 @@ import Foundation
 
 class ModelCities {
     
-     var arrayCities: [String] = [] {
+     var cities: [String] = [] {
         didSet {
             updateView?()
         }
     }
    
-    var arrayWeather = [ModelWeatherProtocol]()
+    var modelsWeather = [ModelWeatherProtocol]()
     var updateView: (()->())?
     
     func getCityName(name: String, updateScreen: @escaping (Bool, String)->()) {
@@ -29,24 +29,25 @@ class ModelCities {
         })
     }
     
-    func getCityNameByLocation(latitude: String, longitude: String, complete: @escaping (String)->()) {  
+    func getCityNameByLocation(latitude: String, longitude: String, complete: @escaping (Bool, String)->()) {
         let url = ApiData.BASE_URL_LOCATION + ApiData.APIKEY + "&q=" + latitude + "%2C" + longitude
         Request.requestWithAlamofire(url: url, complete: { data in
             if data.isEmpty { return }
-            let cityName = data["ParentCity"]["EnglishName"].string
-            cityName != nil ? complete(cityName!) : complete(data["EnglishName"].description)
-        })
+            var cityName = data["ParentCity"]["EnglishName"].string
+            if cityName == nil {
+                cityName = data["EnglishName"].description
+            }
+            self.isRepeat(name: cityName!) ? complete(false, cityName!) : complete(true, cityName!)
+            })
     }
-    
+
     func getWeatherModel(name: String) -> ModelWeatherProtocol {
-        if (name == "") {
-            return ModelWeatherByLocation()
-        }
+        if (name == "") { return ModelWeatherByLocation() }
         return ModelWeatherByCity(city: name)
     }
     
     func isRepeat(name: String) -> Bool {
-        return arrayCities.contains(name)
+        return cities.contains(name)
     }
 }
 

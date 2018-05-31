@@ -28,7 +28,7 @@ class WeatherController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        startMBProgress()
+        showMBProgress()
         setBackground()
         modelWeather.update {
             self.updateScreen()
@@ -41,15 +41,15 @@ class WeatherController: UIViewController {
         refreshControl.endRefreshing()
     }
     
-    func startMBProgress() {
-        if !modelWeather.isLoad() {
+    func showMBProgress() {
+        if !modelWeather.isLoaded() {
             hud = MBProgressHUD.showAdded(to: self.view, animated: true)
             hud?.mode = .indeterminate
         }
     }
     
-    func closeMBProgress() {
-        if self.modelWeather.isLoad() {
+    func hideMBProgress() {
+        if self.modelWeather.isLoaded() {
             self.hud?.hide(animated: true, afterDelay: 0)
         }
     }
@@ -63,10 +63,10 @@ class WeatherController: UIViewController {
     func updateScreen() {
         DispatchQueue.main.async {         
             self.cityLabel.text = self.modelWeather.cityName
-            self.temperatureLabel.text = self.modelWeather.nowWeather?.tempCurrent
+            self.temperatureLabel.text = self.modelWeather.weatherOnDay?.tempCurrent
             self.dataCollection.reloadData()
             self.dataTable.reloadData()
-            self.closeMBProgress()
+            self.hideMBProgress()
         }
     }
 }
@@ -77,12 +77,12 @@ extension WeatherController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TableDataViewCell.reuseIdentifier, for: indexPath) as? TableDataViewCell else  {
             return UITableViewCell()
         }
-        cell.configureWith(data: modelWeather.daysWeather[indexPath.row])
+        cell.configureWith(data: modelWeather.weatherOnFiveDays[indexPath.row])
         return cell
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return modelWeather.daysWeather.count
+        return modelWeather.weatherOnFiveDays.count
     }
 }
 
@@ -90,12 +90,12 @@ extension WeatherController: UITableViewDelegate, UITableViewDataSource {
 extension WeatherController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return modelWeather.hourlyWeather.count
+        return modelWeather.weatherOnHours.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reuseIdentifier, for: indexPath) as? CollectionViewCell else  { return UICollectionViewCell() }
-        cell.configureWith(data: modelWeather.hourlyWeather[indexPath.row])
+        cell.configureWith(data: modelWeather.weatherOnHours[indexPath.row])
         return cell
     }
 }

@@ -14,7 +14,6 @@ class Request {
     static func request(url: String, complete: @escaping (JSON)->Void) {
         guard let url = URL(string: url) else { return }
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            
             guard error == nil else { print("Returning error"); return }
             guard let content = data else { print("Not returning data") ; return }
             guard let httpResponse = response as? HTTPURLResponse else { return }

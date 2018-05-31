@@ -13,33 +13,34 @@ class PageViewController: UIPageViewController {
     
     let modelCities = ModelCities()
     var toolBar: UIToolbar!
-
+    
+    var isLocationEnabled: Bool {
+        guard CLLocationManager.locationServicesEnabled() else { return false }
+        return [.authorizedAlways, .authorizedWhenInUse].contains(CLLocationManager.authorizationStatus())
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadDataWeather()
+        loadData()
         dataSource = self
     }
 
-    
-    private func createToolBar() {
+    private func showToolBar() {
         toolBar = UIToolbar()
         var items = [UIBarButtonItem]()
+        items.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
         items.append(UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: #selector(addCity)))
         items.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
-        items.append(UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: nil))
-        
+
         toolBar.setItems(items, animated: true)
         toolBar.tintColor = .blue
         view.addSubview(toolBar)
         toolBar.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint(item: toolBar, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: toolBar, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1.0, constant: 0).isActive = true
         NSLayoutConstraint(item: toolBar, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1.0, constant: 0).isActive = true
         NSLayoutConstraint(item: toolBar, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1.0, constant: 0).isActive = true
-        
-        toolBar.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        toolBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
-    
-    
     
     @objc func addCity() {
         guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MapViewController") as? MapViewController else { return }
@@ -47,36 +48,19 @@ class PageViewController: UIPageViewController {
         self.present(controller, animated: true, completion: nil)
     }
     
-    
-    
-    
-    //    @objc func add() {
-    //        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SelectNameViewController") as? CityViewController else { return }
-    //        controller.delegate = delegate
-    //        self.present(controller, animated: true, completion: nil)
-    //    }
-    
-    
-    
-    
-    var isLocationEnabled: Bool {
-        guard CLLocationManager.locationServicesEnabled() else { return false }
-        return [.authorizedAlways, .authorizedWhenInUse].contains(CLLocationManager.authorizationStatus())
-    }
-    
     func displayController(index: Int) -> WeatherController? {
         guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { return nil }
         controller.delegate = self
-        controller.modelWeather = modelCities.arrayWeather[index]
-        guard (toolBar) != nil else { createToolBar(); return controller }
+        controller.modelWeather = modelCities.modelsWeather[index]
+        guard (toolBar) != nil else { showToolBar(); return controller }
         return controller
     }
 
-    func updateArrayCities() {
-        guard let city = self.modelCities.arrayCities.last else { return }
+    func updateCities() {
+        guard let city = self.modelCities.cities.last else { return }
         let modelWeather = modelCities.getWeatherModel(name: city)
-        modelCities.arrayWeather.append(modelWeather)
-        guard let controller = displayController(index: modelCities.arrayWeather.count - 1) else { return }
+        modelCities.modelsWeather.append(modelWeather)
+        guard let controller = displayController(index: modelCities.modelsWeather.count - 1) else { return }
         setViewControllers([controller], direction: .forward, animated: true, completion: nil)
     }
     
@@ -88,20 +72,20 @@ class PageViewController: UIPageViewController {
     }
     
     private func loadWeatherByLocation() {
-        createToolBar()
-        modelCities.arrayCities.append("")
+        showToolBar()
+        modelCities.cities.append("")
         guard let controller = displayController(index: 0) else { return }
         setViewControllers([controller], direction: .forward, animated: true, completion: nil)
     }
     
-    fileprivate func loadDataWeather() {
-        modelCities.updateView = updateArrayCities
+    fileprivate func loadData() {
+        modelCities.updateView = updateCities
         isLocationEnabled ? loadWeatherByLocation() : loadMapView()
     }
     
     func getIndex(by city: ModelWeatherProtocol) -> Int? {
-        for i in 0..<modelCities.arrayCities.count {
-            if modelCities.arrayCities[i] == city.nowWeather?.city {
+        for i in 0..<modelCities.cities.count {
+            if modelCities.cities[i] == city.cityName {
                 return i
             }
         }
@@ -124,7 +108,7 @@ extension PageViewController: UIPageViewControllerDelegate, UIPageViewController
         guard let controller = viewController as? WeatherController,
             let viewControllerIndex = getIndex(by: controller.modelWeather)
             else { return nil }
-        if viewControllerIndex + 1 >= modelCities.arrayCities.count {
+        if viewControllerIndex + 1 >= modelCities.cities.count {
             return nil
         }
         return displayController(index: viewControllerIndex + 1)

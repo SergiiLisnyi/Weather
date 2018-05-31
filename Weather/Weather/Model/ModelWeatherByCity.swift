@@ -9,10 +9,10 @@ import SwiftyJSON
 import Foundation
 
 class ModelWeatherByCity: ModelWeatherProtocol {
-     
-    var nowWeather: ForecastWeatherNow?
-    var hourlyWeather = [ForecastWeatherHourly](repeating: ForecastWeatherHourly(time: "", temp: ""), count: 12)
-    var daysWeather = [ForecastWeatherOnDays](repeating: ForecastWeatherOnDays(nameDay: "", minTempDay: "", maxTempDay: ""), count: 5)
+
+    var weatherOnDay: ForecastWeatherDay?
+    var weatherOnHours = [ForecastWeatherHourly](repeating: ForecastWeatherHourly(time: "", temp: ""), count: 12)
+    var weatherOnFiveDays = [ForecastWeatherOnDays](repeating: ForecastWeatherOnDays(nameDay: "", minTempDay: "", maxTempDay: ""), count: 5)
     var cityName: String!
     
     init(city: String) {
@@ -20,8 +20,8 @@ class ModelWeatherByCity: ModelWeatherProtocol {
     }
 
     func update(updateScreen: @escaping ()->Void) { 
-        if !isLoad() {
-            getLocationKey(name: cityName, complete: { locationKey in
+        if !isLoaded() {
+            getLocationKey(name: cityName, completion: { locationKey in
                 self.getWeatherOnFiveDay(keyCity: locationKey, updateScreen: updateScreen)
                 self.getWeatherOnHourly(city: self.cityName, keyCity: locationKey, updateScreen: updateScreen)
             })
@@ -31,13 +31,13 @@ class ModelWeatherByCity: ModelWeatherProtocol {
         }
     }
 
-    func getLocationKey(name: String, complete: @escaping (String)->Void) {
+    func getLocationKey(name: String, completion: @escaping (String)->Void) {
         let url = ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + name
         Request.requestWithAlamofire(url: url, complete: { data in
             if data.isEmpty { return }
             let locationKey = data[0]["Key"].description
             self.cityName = data[0]["EnglishName"].description
-            complete(locationKey)
+            completion(locationKey)
         })
     }
 }

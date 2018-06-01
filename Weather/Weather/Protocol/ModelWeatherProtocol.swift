@@ -53,7 +53,7 @@ extension ModelWeatherProtocol  {
     func getWeatherOnHourly(city: String, keyCity: String, updateScreen: @escaping ()->())  {
         let url = ApiData.BASE_URL + "hourly/12hour/" + keyCity + "?apikey=" + ApiData.APIKEY + "&metric=true"
         Request.requestWithAlamofire(url: url, complete: { data in
-            
+
             self.weatherOnDay = ForecastWeatherDay(
                                                        tempCurrent: data[0]["Temperature"]["Value"].description + "°")
             let time = data[0]["DateTime"].description
@@ -66,5 +66,5 @@ extension ModelWeatherProtocol  {
             }
             updateScreen()
         })
-    }   
+    }
 }

@@ -47,7 +47,7 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
         data.modelCities.getCityNameByLocation(latitude: latitude, longitude: longitude, complete: { isValidName, name in
             DispatchQueue.main.async {
                 if isValidName {
-                    data.modelCities.cities.append(name)
+                    data.modelCities.addCity(cityName: name)
                     self.dismiss(animated: true)
                 }
                 else {

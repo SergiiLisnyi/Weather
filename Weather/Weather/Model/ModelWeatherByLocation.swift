@@ -20,7 +20,7 @@ class ModelWeatherByLocation: NSObject, ModelWeatherProtocol  {
     let locationManager = CLLocationManager()
     var weatherOnFiveDays = [ForecastWeatherOnDays](repeating: ForecastWeatherOnDays(nameDay: "", minTempDay: "", maxTempDay: ""), count: 5)
     var cityName: String!
-    var callBack: (()->Void)?
+    var callBack: (()->())?
     
     override init() {
         super.init()
@@ -29,9 +29,10 @@ class ModelWeatherByLocation: NSObject, ModelWeatherProtocol  {
     
     func update(updateScreen: @escaping ()->Void) {
         callBack = updateScreen
+        if isLoaded() { callBack?() }
     }
     
-    fileprivate func updateLocation() {
+    private func updateLocation() {
         self.locationManager.requestAlwaysAuthorization()
         self.locationManager.requestWhenInUseAuthorization()
         if CLLocationManager.locationServicesEnabled() {
@@ -42,7 +43,6 @@ class ModelWeatherByLocation: NSObject, ModelWeatherProtocol  {
     }
     
     func getLocationKey(latitude: String, longitude: String, completion: @escaping (String)->Void) {
-        
         let url = ApiData.BASE_URL_LOCATION + ApiData.APIKEY + "&q=" + latitude + "%2C%20" + longitude
         Request.requestWithAlamofire(url: url, complete: { data in
             if data.isEmpty { return }

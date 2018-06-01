@@ -41,27 +41,27 @@ class WeatherController: UIViewController {
         refreshControl.endRefreshing()
     }
     
-    func showMBProgress() {
+    private func showMBProgress() {
         if !modelWeather.isLoaded() {
             hud = MBProgressHUD.showAdded(to: self.view, animated: true)
             hud?.mode = .indeterminate
         }
     }
     
-    func hideMBProgress() {
+    private func hideMBProgress() {
         if self.modelWeather.isLoaded() {
             self.hud?.hide(animated: true, afterDelay: 0)
         }
     }
     
-    func setBackground() {
+    private func setBackground() {
         let imageView = UIImageView(frame: view.bounds)
         imageView.image = UIImage(named: "img")
         self.view.insertSubview(imageView, at: 0)
     }
     
     func updateScreen() {
-        DispatchQueue.main.async {         
+        DispatchQueue.main.async {
             self.cityLabel.text = self.modelWeather.cityName
             self.temperatureLabel.text = self.modelWeather.weatherOnDay?.tempCurrent
             self.dataCollection.reloadData()

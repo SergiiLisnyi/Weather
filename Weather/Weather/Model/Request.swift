@@ -26,7 +26,6 @@ class Request {
         task.resume()
     }
 
-    
     static func requestWithAlamofire (url: String, complete: @escaping (JSON)->Void) {
         guard let url = URL(string: url) else { return }
         Alamofire.request(url)

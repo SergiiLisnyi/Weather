@@ -9,24 +9,29 @@ import SwiftyJSON
 import Foundation
 
 class ModelCities {
-    
-     var cities: [String] = [] {
-        didSet {
-            updateView?()
-        }
-    }
-   
+
+    var cities =  [String]()
     var modelsWeather = [ModelWeatherProtocol]()
-    var updateView: (()->())?
+    var updateView: ((Operation)->())?
     
-    func getCityName(name: String, updateScreen: @escaping (Bool, String)->()) {
-        let url = ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + name
-        Request.requestWithAlamofire(url: url, complete: { data in
-            if data.isEmpty { return }
-            let city = data[0]["EnglishName"].description
-            self.isRepeat(name: city) ? updateScreen(false, "") :
-                                    updateScreen(city != "null", city)
-        })
+    func remove(index: Int) {
+        modelsWeather.remove(at: index)
+        cities.remove(at: index)
+        updateView?(.remove)
+    }
+    
+    func addCity(cityName: String) {
+        cities.append(cityName)
+        updateView?(.add)
+    }
+    
+    func getCity() -> [(name: String, temp: String)]? {
+        var result = [(name: String, temp: String)]()
+        for i in 0..<modelsWeather.count {
+            guard let data = modelsWeather[i].weatherOnDay else { return nil }
+            result.append((modelsWeather[i].cityName, data.tempCurrent))
+        }
+        return result
     }
     
     func getCityNameByLocation(latitude: String, longitude: String, complete: @escaping (Bool, String)->()) {

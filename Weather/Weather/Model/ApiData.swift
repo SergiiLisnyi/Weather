@@ -9,7 +9,7 @@
 import Foundation
 
 class ApiData {
-    static let APIKEY = "aQj5AH0IRbrdLmBAGgVmwYNnF5kqdFWp"
+    static let APIKEY = "LWFs5lCVCY9pAInZmeYodm4O59fQoNmy"
     static let BASE_URL_LOCATION = "https://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey="
     static let BASE_URL_CITY = "https://dataservice.accuweather.com/locations/v1/cities/search?apikey="
     static let BASE_URL = "https://dataservice.accuweather.com/forecasts/v1/"

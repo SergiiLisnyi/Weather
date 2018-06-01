@@ -28,10 +28,9 @@ class WeatherController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        showMBProgress()
         setBackground()
-        modelWeather.update {
-            self.updateScreen()
+        modelWeather.update { error in
+            error != nil ? self.showAlert(title: "Error", message: error!) : self.updateScreen(); self.showMBProgress()
         }
         self.dataTable.addSubview(self.refreshControl)
     }
@@ -49,8 +48,8 @@ class WeatherController: UIViewController {
     }
     
     private func hideMBProgress() {
-        if self.modelWeather.isLoaded() {
-            self.hud?.hide(animated: true, afterDelay: 0)
+        if modelWeather.isLoaded() {
+            hud?.hide(animated: true, afterDelay: 0)
         }
     }
     
@@ -99,8 +98,6 @@ extension WeatherController: UICollectionViewDelegate, UICollectionViewDataSourc
         return cell
     }
 }
-
-
 
 
 

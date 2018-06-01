@@ -26,7 +26,7 @@ class Request {
         task.resume()
     }
 
-    static func requestWithAlamofire (url: String, complete: @escaping (JSON)->Void) {
+    static func requestWithAlamofire (url: String, complete: @escaping (JSON, String?)->Void) {
         guard let url = URL(string: url) else { return }
         Alamofire.request(url)
             .validate(statusCode: 200..<300)
@@ -34,10 +34,12 @@ class Request {
             .responseData { response in
             guard response.result.isSuccess else {
                 print("Error \(String(describing: response.result.error))")
+                guard let statusCode = response.response?.statusCode.description else { return }
+                complete("", "Status code: " + statusCode)
                 return
             }
             guard let content = response.data else { return }
-            complete(JSON(content))
+            complete(JSON(content), nil)
         }
     }
 }

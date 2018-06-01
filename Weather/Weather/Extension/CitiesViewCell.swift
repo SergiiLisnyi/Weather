@@ -24,9 +24,4 @@ class CitiesViewCell: UITableViewCell {
     }
 }
 
-extension CitiesViewCell {
-    class var reuseIdentifier: String {
-        return NSStringFromClass(self).components(separatedBy: ".").last!
-    }
-}
 

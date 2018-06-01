@@ -44,15 +44,19 @@ class ModelCities {
         return result
     }
     
-    func getCityNameByLocation(latitude: String, longitude: String, complete: @escaping (Bool, String)->()) {
+    func getCityNameByLocation(latitude: String, longitude: String, complete: @escaping (Bool, String, String?)->()) {
         let url = ApiData.BASE_URL_LOCATION + ApiData.APIKEY + "&q=" + latitude + "%2C" + longitude
-        Request.requestWithAlamofire(url: url, complete: { data in
+        Request.requestWithAlamofire(url: url, complete: { data, error  in
+            if let error = error {
+                complete(false, "", error)
+                return
+            }
             if data.isEmpty { return }
             var cityName = data["ParentCity"]["EnglishName"].string
             if cityName == nil {
                 cityName = data["EnglishName"].description
             }
-            self.isRepeat(name: cityName!) ? complete(false, cityName!) : complete(true, cityName!)
+            self.isRepeat(name: cityName!) ? complete(false, cityName!, nil) : complete(true, cityName!, nil)
             })
     }
 

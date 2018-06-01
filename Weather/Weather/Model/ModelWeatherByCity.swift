@@ -19,7 +19,7 @@ class ModelWeatherByCity: ModelWeatherProtocol {
         self.cityName = city
     }
 
-    func update(updateScreen: @escaping ()->Void) { 
+    func update(updateScreen: @escaping (String?)->Void) {
         if !isLoaded() {
             getLocationKey(name: cityName, completion: { locationKey in
                 self.getWeatherOnFiveDay(keyCity: locationKey, updateScreen: updateScreen)
@@ -27,7 +27,7 @@ class ModelWeatherByCity: ModelWeatherProtocol {
             })
         }
         else {
-            updateScreen()
+            updateScreen(nil)
         }
     }
 
@@ -35,7 +35,7 @@ class ModelWeatherByCity: ModelWeatherProtocol {
         var parcedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         parcedName = parcedName.replacingOccurrences(of: " ", with: "%20")
         let url = ApiData.BASE_URL_CITY + ApiData.APIKEY + "&q=" + parcedName
-        Request.requestWithAlamofire(url: url, complete: { data in
+        Request.requestWithAlamofire(url: url, complete: { data, error  in
             if data.isEmpty { return }
             let locationKey = data[0]["Key"].description
             self.cityName = data[0]["EnglishName"].description

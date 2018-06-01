@@ -26,12 +26,6 @@ class TableDataViewCell: UITableViewCell {
     }
 }
 
-extension TableDataViewCell {
-    class var reuseIdentifier: String {
-        return NSStringFromClass(self).components(separatedBy: ".").last!
-    }
-}
-
 
 
 

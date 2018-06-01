@@ -44,8 +44,12 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
     
     private func addToCities (latitude: String, longitude: String) {
         guard let data = self.delegate else { return }
-        data.modelCities.getCityNameByLocation(latitude: latitude, longitude: longitude, complete: { isValidName, name in
+        data.modelCities.getCityNameByLocation(latitude: latitude, longitude: longitude, complete: { isValidName, name, error  in
             DispatchQueue.main.async {
+                if let error = error {
+                    self.showAlert(title: "Error", message: error)
+                    return
+                }
                 if isValidName {
                     data.modelCities.addCity(cityName: name)
                     self.dismiss(animated: true)
@@ -84,12 +88,6 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
 }
 
 extension MapViewController {
-   
-    func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        self.present(alert, animated: true, completion: nil)
-    }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()

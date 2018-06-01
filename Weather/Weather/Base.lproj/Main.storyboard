@@ -150,6 +150,7 @@
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ybO-cp-D2H" secondAttribute="trailing" constant="20" symbolic="YES" id="MaW-F0-wQp"/>
                             <constraint firstItem="HV6-18-8uU" firstAttribute="top" secondItem="bod-cz-k86" secondAttribute="top" id="Qpu-gm-8Kq"/>
                             <constraint firstItem="ybO-cp-D2H" firstAttribute="leading" secondItem="bod-cz-k86" secondAttribute="leading" constant="16" id="VLB-NY-wrw"/>
+                            <constraint firstItem="HV6-18-8uU" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="mSy-QI-S1k" secondAttribute="leading" constant="20" symbolic="YES" id="nlw-30-mHL"/>
                             <constraint firstItem="bod-cz-k86" firstAttribute="trailing" secondItem="HV6-18-8uU" secondAttribute="trailing" constant="16" id="qYI-8b-tpw"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="bod-cz-k86"/>

@@ -11,6 +11,11 @@ import Foundation
 import UIKit
 
 extension UIViewController {
+
+    class var reuseIdentifier: String {
+        return NSStringFromClass(self).components(separatedBy: ".").last!
+    }
+    
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))

@@ -25,7 +25,6 @@ class CitiesViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    
     @IBAction func editButtonTapped(_ sender: UIButton) {
        dataTable.isEditing = !dataTable.isEditing
     }

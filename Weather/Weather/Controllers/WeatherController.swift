@@ -85,7 +85,6 @@ extension WeatherController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-
 extension WeatherController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

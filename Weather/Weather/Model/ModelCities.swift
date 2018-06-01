@@ -14,9 +14,9 @@ class ModelCities {
     var modelsWeather = [ModelWeatherProtocol]()
     var updateView: ((Operation)->())?
     
-    func remove(at: Int) {
-        modelsWeather.remove(at: at)
-        cities.remove(at: at)
+    func remove(at index: Int) {
+        modelsWeather.remove(at: index)
+        cities.remove(at: index)
         updateView?(.edit)
     }
     
@@ -25,13 +25,13 @@ class ModelCities {
         updateView?(.add)
     }
     
-    func editOrder(from: Int, to: Int) {
-        let itemCity = cities[from]
-        let itemWeather = modelsWeather[from]
-        cities.remove(at: from)
-        modelsWeather.remove(at: from)
-        cities.insert(itemCity, at: to)
-        modelsWeather.insert(itemWeather, at: to)
+    func editOrder(from indexOutput: Int, to indexInsert: Int) {
+        let itemCity = cities[indexOutput]
+        let itemWeather = modelsWeather[indexOutput]
+        cities.remove(at: indexOutput)
+        modelsWeather.remove(at: indexOutput)
+        cities.insert(itemCity, at: indexInsert)
+        modelsWeather.insert(itemWeather, at: indexInsert)
         updateView?(.edit)
     }
 

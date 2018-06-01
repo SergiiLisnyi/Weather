@@ -30,23 +30,23 @@ class PageViewController: UIPageViewController {
     }
     
     @objc func addCity() {
-        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MapViewController") as? MapViewController else { return }
+        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: MapViewController.reuseIdentifier) as? MapViewController else { return }
         controller.delegate = self
         self.present(controller, animated: true, completion: nil)
     }
     
     @objc func edit() {
-        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "CitiesViewController") as? CitiesViewController else { return }
+        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: CitiesViewController.reuseIdentifier) as? CitiesViewController else { return }
         controller.delegate = self
         self.present(controller, animated: true, completion: nil)
     }
 
     private func displayController(index: Int) -> UIViewController? {
-        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "WeatherController") as? WeatherController else { return nil }
+        guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: WeatherController.reuseIdentifier) as? WeatherController else { return nil }
         controller.delegate = self
         if modelCities.modelsWeather.isEmpty {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            guard let controller = storyboard.instantiateViewController(withIdentifier: "MapViewController") as? MapViewController else { return nil }
+            guard let controller = storyboard.instantiateViewController(withIdentifier: MapViewController.reuseIdentifier) as? MapViewController else { return nil }
             controller.delegate = self
             return controller
         } else {
@@ -77,7 +77,7 @@ class PageViewController: UIPageViewController {
 
      private func loadMapView() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        guard let controller = storyboard.instantiateViewController(withIdentifier: "MapViewController") as? MapViewController else { return }
+        guard let controller = storyboard.instantiateViewController(withIdentifier: MapViewController.reuseIdentifier) as? MapViewController else { return }
         controller.delegate = self
         setViewControllers([controller], direction: .forward, animated: true, completion: nil)
     }
@@ -101,11 +101,9 @@ class PageViewController: UIPageViewController {
     private func showToolBar() {
         toolBar = UIToolbar()
         var items = [UIBarButtonItem]()
-        
         items.append(UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: #selector(addCity)))
         items.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
         items.append(UIBarButtonItem(barButtonSystemItem: .edit, target: nil, action: #selector(edit)))
-        
         toolBar.setItems(items, animated: true)
         toolBar.tintColor = .blue
         view.addSubview(toolBar)

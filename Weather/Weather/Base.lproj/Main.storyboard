@@ -76,27 +76,27 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="vF5-mW-ACb">
-                                <rect key="frame" x="0.0" y="73" width="367" height="594"/>
+                                <rect key="frame" x="0.0" y="73" width="375" height="594"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CitiesViewCell" id="x40-og-a48" customClass="CitiesViewCell" customModule="Weather" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="367" height="44"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="x40-og-a48" id="D46-yf-qBq" customClass="CitiesViewCell" customModule="Weather" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="0.0" width="367" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="City" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uF5-cC-7Ko">
-                                                    <rect key="frame" x="15" y="12" width="282" height="21"/>
+                                                    <rect key="frame" x="15" y="12" width="240" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="t" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wft-he-wmu">
-                                                    <rect key="frame" x="305" y="11" width="47" height="21"/>
+                                                    <rect key="frame" x="255" y="12" width="47" height="22"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -129,17 +129,36 @@
                                     <action selector="doneButtonTapped:" destination="hbx-PA-spK" eventType="touchUpInside" id="9nC-l1-NJz"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HV6-18-8uU">
+                                <rect key="frame" x="329" y="20" width="30" height="45"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="KaQ-f7-q8Z"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="45" id="fby-7H-gZH"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <state key="normal" title="Edit">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="editButtonTapped:" destination="hbx-PA-spK" eventType="touchUpInside" id="X9v-RB-FYh"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="ybO-cp-D2H" firstAttribute="top" secondItem="bod-cz-k86" secondAttribute="top" id="GCe-R3-cmm"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ybO-cp-D2H" secondAttribute="trailing" constant="20" symbolic="YES" id="MaW-F0-wQp"/>
+                            <constraint firstItem="HV6-18-8uU" firstAttribute="top" secondItem="bod-cz-k86" secondAttribute="top" id="Qpu-gm-8Kq"/>
                             <constraint firstItem="ybO-cp-D2H" firstAttribute="leading" secondItem="bod-cz-k86" secondAttribute="leading" constant="16" id="VLB-NY-wrw"/>
+                            <constraint firstItem="bod-cz-k86" firstAttribute="trailing" secondItem="HV6-18-8uU" secondAttribute="trailing" constant="16" id="qYI-8b-tpw"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="bod-cz-k86"/>
                     </view>
                     <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="dataTable" destination="vF5-mW-ACb" id="mI8-1R-dM4"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3vc-Fp-sDy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

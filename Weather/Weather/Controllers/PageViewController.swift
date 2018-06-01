@@ -64,7 +64,7 @@ class PageViewController: UIPageViewController {
             modelCities.modelsWeather.append(modelWeather)
             guard let controller = displayController(index: modelCities.modelsWeather.count - 1) else { return }
             setViewControllers([controller], direction: .forward, animated: true, completion: nil)
-        case .remove:
+        case .edit:
             dataSource = nil
             if let controller = displayController(index: 0) {
                 setViewControllers([controller], direction: .reverse, animated: true, completion: nil)
@@ -141,7 +141,7 @@ extension PageViewController: UIPageViewControllerDelegate, UIPageViewController
 
 enum Operation {
     case add
-    case remove
+    case edit
 }
 
 

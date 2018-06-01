@@ -10,6 +10,7 @@ import UIKit
 
 class CitiesViewController: UIViewController {
 
+    @IBOutlet weak var dataTable: UITableView!
     var cityData = [(name: String, temp: String)]()
     var delegate: PageViewController?
     
@@ -22,6 +23,11 @@ class CitiesViewController: UIViewController {
 
     @IBAction func doneButtonTapped(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    @IBAction func editButtonTapped(_ sender: UIButton) {
+       dataTable.isEditing = !dataTable.isEditing
     }
     
     private func setBackground() {
@@ -49,9 +55,21 @@ extension CitiesViewController: UITableViewDelegate, UITableViewDataSource {
         if editingStyle == .delete {
             cityData.remove(at: indexPath.row)
             guard let data = self.delegate else { return }
-            data.modelCities.remove(index: indexPath.row)
+            data.modelCities.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        guard let data = self.delegate else { return }
+        data.modelCities.editOrder(from: sourceIndexPath.row, to: destinationIndexPath.row)
+        let item = cityData[sourceIndexPath.row]
+        cityData.remove(at: sourceIndexPath.row)
+        cityData.insert(item, at: destinationIndexPath.row)
     }
 }
 

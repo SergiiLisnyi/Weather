@@ -20,7 +20,7 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
     var pinAnnotationView:MKPinAnnotationView!
     private var latitude: String!
     private var longitude: String!
-    var delegate: PageViewController?
+    var delegate: MapViewControllerDelegateProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,14 +44,14 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
     
     private func addToCities (latitude: String, longitude: String) {
         guard let data = self.delegate else { return }
-        data.modelCities.getCityNameByLocation(latitude: latitude, longitude: longitude, complete: { isValidName, name, error  in
+        data.getCityNameByLocation(latitude: latitude, longitude: longitude, complete: { isValidName, name, error  in
             DispatchQueue.main.async {
                 if let error = error {
                     self.showAlert(title: "Error", message: error)
                     return
                 }
                 if isValidName {
-                    data.modelCities.addCity(cityName: name)
+                    data.addCity(cityName: name)
                     self.dismiss(animated: true)
                 }
                 else {

@@ -31,23 +31,22 @@ class PageViewController: UIPageViewController {
     
     @objc func addCity() {
         guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: MapViewController.reuseIdentifier) as? MapViewController else { return }
-        controller.delegate = self
+        controller.delegate = modelCities
         self.present(controller, animated: true, completion: nil)
     }
     
     @objc func edit() {
         guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: CitiesViewController.reuseIdentifier) as? CitiesViewController else { return }
-        controller.delegate = self
+        controller.delegate = modelCities
         self.present(controller, animated: true, completion: nil)
     }
 
     private func displayController(index: Int) -> UIViewController? {
         guard let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: WeatherController.reuseIdentifier) as? WeatherController else { return nil }
-        controller.delegate = self
         if modelCities.modelsWeather.isEmpty {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             guard let controller = storyboard.instantiateViewController(withIdentifier: MapViewController.reuseIdentifier) as? MapViewController else { return nil }
-            controller.delegate = self
+            controller.delegate = modelCities
             return controller
         } else {
             controller.modelWeather = modelCities.modelsWeather[index]
@@ -78,7 +77,7 @@ class PageViewController: UIPageViewController {
      private func loadMapView() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         guard let controller = storyboard.instantiateViewController(withIdentifier: MapViewController.reuseIdentifier) as? MapViewController else { return }
-        controller.delegate = self
+        controller.delegate = modelCities
         setViewControllers([controller], direction: .forward, animated: true, completion: nil)
     }
     

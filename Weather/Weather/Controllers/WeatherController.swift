@@ -12,7 +12,6 @@ import MBProgressHUD
 class WeatherController: UIViewController {
 
     var modelWeather: ModelWeatherProtocol!
-    var delegate: PageViewController?
     var hud: MBProgressHUD?
     @IBOutlet weak var dataCollection: UICollectionView!
     @IBOutlet weak var dataTable: UITableView!

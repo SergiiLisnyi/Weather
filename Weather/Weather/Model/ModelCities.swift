@@ -8,7 +8,7 @@
 import SwiftyJSON
 import Foundation
 
-class ModelCities {
+class ModelCities : CitiesViewControllerDelegateProtocol, MapViewControllerDelegateProtocol {
 
     var cities =  [String]()
     var modelsWeather = [ModelWeatherProtocol]()

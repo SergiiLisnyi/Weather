@@ -12,12 +12,12 @@ class CitiesViewController: UIViewController {
 
     @IBOutlet weak var dataTable: UITableView!
     var cityData = [(name: String, temp: String)]()
-    var delegate: PageViewController?
+    var delegate: CitiesViewControllerDelegateProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setBackground()
-        guard let data = self.delegate, let cityData = data.modelCities.getCity() else { return }
+        guard let data = self.delegate, let cityData = data.getCity() else { return }
         self.cityData = cityData
     }
 
@@ -54,7 +54,7 @@ extension CitiesViewController: UITableViewDelegate, UITableViewDataSource {
         if editingStyle == .delete {
             cityData.remove(at: indexPath.row)
             guard let data = self.delegate else { return }
-            data.modelCities.remove(at: indexPath.row)
+            data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
@@ -65,7 +65,7 @@ extension CitiesViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         guard let data = self.delegate else { return }
-        data.modelCities.editOrder(from: sourceIndexPath.row, to: destinationIndexPath.row)
+        data.editOrder(from: sourceIndexPath.row, to: destinationIndexPath.row)
         let item = cityData[sourceIndexPath.row]
         cityData.remove(at: sourceIndexPath.row)
         cityData.insert(item, at: destinationIndexPath.row)

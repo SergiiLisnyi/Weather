@@ -8,9 +8,9 @@
 
 import Foundation
 
-protocol CitiesViewControllerDelegateProtocol {
+protocol CitiesViewControllerDelegate {
     
-    func getCity() -> [(name: String, temp: String)]?
+    func getDataCity() -> [(name: String, temp: String)]?
     func remove(at index: Int)
     func editOrder(from indexOutput: Int, to indexInsert: Int)
 

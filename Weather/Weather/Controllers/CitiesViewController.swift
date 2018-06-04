@@ -12,12 +12,12 @@ class CitiesViewController: UIViewController {
 
     @IBOutlet weak var dataTable: UITableView!
     var cityData = [(name: String, temp: String)]()
-    var delegate: CitiesViewControllerDelegateProtocol?
+    var delegate: CitiesViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setBackground()
-        guard let data = self.delegate, let cityData = data.getCity() else { return }
+        guard let data = self.delegate, let cityData = data.getDataCity() else { return }
         self.cityData = cityData
     }
 

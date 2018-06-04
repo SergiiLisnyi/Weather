@@ -8,7 +8,7 @@
 import SwiftyJSON
 import Foundation
 
-class ModelCities : CitiesViewControllerDelegateProtocol, MapViewControllerDelegateProtocol {
+class ModelCities : CitiesViewControllerDelegate, MapViewControllerDelegate {
 
     var cities =  [String]()
     var modelsWeather = [ModelWeatherProtocol]()
@@ -35,7 +35,7 @@ class ModelCities : CitiesViewControllerDelegateProtocol, MapViewControllerDeleg
         updateView?(.edit)
     }
 
-    func getCity() -> [(name: String, temp: String)]? {
+    func getDataCity() -> [(name: String, temp: String)]? {
         var result = [(name: String, temp: String)]()
         for i in 0..<modelsWeather.count {
             guard let data = modelsWeather[i].weatherOnDay else { return nil }

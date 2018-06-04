@@ -20,7 +20,7 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
     var pinAnnotationView:MKPinAnnotationView!
     private var latitude: String!
     private var longitude: String!
-    var delegate: MapViewControllerDelegateProtocol?
+    var delegate: MapViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()

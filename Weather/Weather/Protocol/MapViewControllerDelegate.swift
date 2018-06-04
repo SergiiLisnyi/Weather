@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol  MapViewControllerDelegateProtocol {
+protocol  MapViewControllerDelegate {
     
     func getCityNameByLocation(latitude: String, longitude: String, complete: @escaping (Bool, String, String?)->())
     func addCity(cityName: String)

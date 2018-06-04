@@ -17,8 +17,8 @@
 		285D2DEF20B5332800D66154 /* ModelWeatherByLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 285D2DEE20B5332800D66154 /* ModelWeatherByLocation.swift */; };
 		285D2DF120B533CE00D66154 /* ModelWeatherProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 285D2DF020B533CE00D66154 /* ModelWeatherProtocol.swift */; };
 		2860BDDC20BEC201000DC49A /* ForecastWeatherDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2860BDDB20BEC201000DC49A /* ForecastWeatherDay.swift */; };
-		2861E48E20C5071E007F7728 /* CitiesViewControllerDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2861E48D20C5071E007F7728 /* CitiesViewControllerDelegateProtocol.swift */; };
-		2861E49020C50C5D007F7728 /* MapViewControllerDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2861E48F20C50C5D007F7728 /* MapViewControllerDelegateProtocol.swift */; };
+		2861E48E20C5071E007F7728 /* CitiesViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2861E48D20C5071E007F7728 /* CitiesViewControllerDelegate.swift */; };
+		2861E49020C50C5D007F7728 /* MapViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2861E48F20C50C5D007F7728 /* MapViewControllerDelegate.swift */; };
 		286BFA4620BD45BD001ACF24 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286BFA4520BD45BD001ACF24 /* MapViewController.swift */; };
 		286D482420AEA2F40092E727 /* ModelCities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286D482320AEA2F40092E727 /* ModelCities.swift */; };
 		2873438320C17BBD0047F585 /* UIViewConroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2873438220C17BBD0047F585 /* UIViewConroller.swift */; };
@@ -48,8 +48,8 @@
 		285D2DEE20B5332800D66154 /* ModelWeatherByLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelWeatherByLocation.swift; sourceTree = "<group>"; };
 		285D2DF020B533CE00D66154 /* ModelWeatherProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelWeatherProtocol.swift; sourceTree = "<group>"; };
 		2860BDDB20BEC201000DC49A /* ForecastWeatherDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastWeatherDay.swift; sourceTree = "<group>"; };
-		2861E48D20C5071E007F7728 /* CitiesViewControllerDelegateProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesViewControllerDelegateProtocol.swift; sourceTree = "<group>"; };
-		2861E48F20C50C5D007F7728 /* MapViewControllerDelegateProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewControllerDelegateProtocol.swift; sourceTree = "<group>"; };
+		2861E48D20C5071E007F7728 /* CitiesViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesViewControllerDelegate.swift; sourceTree = "<group>"; };
+		2861E48F20C50C5D007F7728 /* MapViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewControllerDelegate.swift; sourceTree = "<group>"; };
 		286BFA4520BD45BD001ACF24 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		286D482320AEA2F40092E727 /* ModelCities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCities.swift; sourceTree = "<group>"; };
 		2873438220C17BBD0047F585 /* UIViewConroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewConroller.swift; sourceTree = "<group>"; };
@@ -89,8 +89,8 @@
 			isa = PBXGroup;
 			children = (
 				285D2DF020B533CE00D66154 /* ModelWeatherProtocol.swift */,
-				2861E48D20C5071E007F7728 /* CitiesViewControllerDelegateProtocol.swift */,
-				2861E48F20C50C5D007F7728 /* MapViewControllerDelegateProtocol.swift */,
+				2861E48D20C5071E007F7728 /* CitiesViewControllerDelegate.swift */,
+				2861E48F20C50C5D007F7728 /* MapViewControllerDelegate.swift */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -314,9 +314,9 @@
 				28E0947520AECC1F0058A7ED /* ForecastWeatherHourly.swift in Sources */,
 				285BB69B20AC10EF005C0B85 /* CollectionViewCell.swift in Sources */,
 				285D2DF120B533CE00D66154 /* ModelWeatherProtocol.swift in Sources */,
-				2861E48E20C5071E007F7728 /* CitiesViewControllerDelegateProtocol.swift in Sources */,
+				2861E48E20C5071E007F7728 /* CitiesViewControllerDelegate.swift in Sources */,
 				286D482420AEA2F40092E727 /* ModelCities.swift in Sources */,
-				2861E49020C50C5D007F7728 /* MapViewControllerDelegateProtocol.swift in Sources */,
+				2861E49020C50C5D007F7728 /* MapViewControllerDelegate.swift in Sources */,
 				2888FB3D20AACEB900E87678 /* WeatherController.swift in Sources */,
 				286BFA4620BD45BD001ACF24 /* MapViewController.swift in Sources */,
 				2873438320C17BBD0047F585 /* UIViewConroller.swift in Sources */,
